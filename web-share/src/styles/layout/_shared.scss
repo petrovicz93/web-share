@@ -1,0 +1,90 @@
+.main {
+  width: 100%;
+  min-height: calc(100vh - 120px);
+  display: flex;
+  .content {
+    background-color: $light;
+    // height: 100%;
+    flex: auto;
+    // padding: 20px;
+    // padding: 0 20px;
+  }
+}
+
+.align-center {
+  align-items: center;
+}
+
+.invite-btn {
+  font-size: 20px;
+  padding: 8px 8px;
+  color: #fff;
+}
+
+// group page style
+.group-list {
+  .card {
+    cursor: pointer;
+    .card-header {
+      font-size: 16px;
+      font-weight: 400;
+      font-family: monospace;
+    }
+    .card-body .list-group .list-group-item {
+      font-size: 14px;
+    }
+  }
+}
+
+.group-detail-modal {
+  .modal-header {
+    .modal-title {
+      font-size: 22px;
+    }
+    button span {
+      font-size: 22px;
+    }
+  }
+  .card-header {
+    font-weight: 500;
+  }
+  .list-group-item {
+    .remove-member-btn {
+      float: right;
+    }
+  }
+
+  .btn {
+    float: right;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .sort-group-members {
+    display: flex;
+    position: absolute;
+    right: 2px;
+    top: 3px;
+    label {
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    select {
+      font-size: 14px;
+      width: 120px;
+    }
+  }
+  select {
+    font-size: 14px;
+  }
+
+  .form-label:after {
+    content: '*';
+    margin-left: 2px;
+    color: red;
+  }
+}
+
+.dark-icon {
+  fill: $dark;
+}

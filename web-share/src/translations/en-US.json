@@ -1,0 +1,22 @@
+{
+  "app.dashboard.title": "Dashboard",
+  "app.groups.title": "Groups",
+  "app.mediaStreaming.title": "Media Streaming",
+  "app.conferencing.title": "Conferencing",
+  "app.telephony.title": "Telephony",
+  "app.chat.title": "Chat",
+  "app.mail.title": "Secure Mail",
+  "app.fileSharing.title": "File Sharing",
+  "app.transaction.title": "Payments",
+  "app.calendar.title": "Calendar and Scheduling",
+  "app.communication.title": "IoT Device Control",
+  "app.statistic.title": "History and Analytics",
+  "app.header.menu.my-profile": "My Profile",
+  "app.header.menu.invite-member": "Invite Member",
+  "app.header.menu.logout": "Log Out",
+  "app.header.upcomingVideoCall": "Upcoming Video Call",
+  "app.contacts.table.header.name": "Name",
+  "app.contacts.table.header.email": "Email",
+  "app.contacts.table.header.phoneNumber": "Phone Number",
+  "app.contacts.table.header.country": "Country"
+}

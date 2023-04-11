@@ -1,0 +1,311 @@
+.dashboard-section {
+  margin: 0;
+  padding: 15px 10px;
+  min-height: calc(100vh - 120px);
+
+  .calendar-widget {
+    .MuiToolbar-root {
+      display: none;
+    }
+
+    .calendar-icon {
+      font-size: 24px;
+      position: absolute;
+      top: 14px;
+      left: 105px;
+      color: #94c03d;
+    }
+
+    .MuiPickersCalendarHeader-switchHeader {
+      padding: 0 15px;
+      .MuiPickersCalendarHeader-iconButton {
+        border: 1px solid #d4e2f0;
+        width: 30px;
+        height: 30px;
+      }
+      .MuiPickersCalendarHeader-transitionContainer {
+        .MuiTypography-body1 {
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .MuiPickersCalendarHeader-daysHeader {
+      .MuiPickersCalendarHeader-dayLabel {
+        font-size: 15px;
+        color: #94c03d;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .event-widget {
+    height: 100%;
+    .event-card {
+      padding: 0 5px;
+      height: 100%;
+
+      .MuiListItem-gutters {
+        padding: 0;
+        .MuiListItemIcon-root {
+          min-width: 25px;
+        }
+        .location-icon {
+          color: #3f51b5
+        }
+      }
+
+      .MuiPaper-root {
+        height: 100%;
+      }
+  
+      .event-date-time {
+        ul {
+          display: flex;
+          li {
+            padding: 0 8px;
+            .MuiListItemIcon-root {
+              min-width: 20px;
+              .MuiSvgIcon-root {
+                font-size: 14px;
+              }
+            }
+            .MuiListItemText-root {
+             span {
+               font-size: 12px;
+             }
+            }
+          }
+        }
+      }
+  
+      .MuiCardActions-root {
+        .edit_btn {
+          font-size: 17px;
+          border-radius: 20px;
+          width: 100px;
+          background: #dce1ec;
+          color: #3f51b5;
+          height: 40px;
+        }
+        .MuiIconButton-label {
+          margin-left: 12px;
+          .MuiSvgIcon-root {
+            font-size: 25px;
+            position: absolute;
+            left: 10px;
+            background: #fff;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+  }
+
+  .scheduled-meetings {
+    .col-md-12 {
+      padding-right: 5px;
+      .MuiCard-root {
+        max-width: 100%;
+        background: #f4f4ff;
+        .MuiCardHeader-root {
+          // padding: 5px 15px;
+          .MuiCardHeader-content .MuiCardHeader-title {
+            font-size: 16px;
+            font-weight: 600;
+          }
+        }
+        .MuiCardContent-root {
+          padding: 5px 10px;;
+          .schedule-meeting_content-header {
+            .MuiIconButton-root {
+              width: 100px;
+              height: 24px;
+              font-size: 14px;
+              border-radius: 12px;
+              margin: 0 5px;
+            }
+
+            .upcoming-pass_btn {
+              padding-top: 20px;
+              .upcoming_btn {
+                background: #94c03d;
+                color: #fff;
+              }
+  
+              .pass_btn {
+                background: #dce1ec;
+                color: #3f51b5;
+              }
+            }
+
+            .sort-meeting-list .MuiFormControl-root {
+              float: right;
+            }
+          }
+        }
+      }
+    }
+
+    .meeting-card-list {
+      padding: 15px;
+      .meeting-card {
+        .MuiPaper-root {
+          background: #fff;
+
+          .MuiCardHeader-root {
+            display: flex;
+            padding: 16px;
+            align-items: center;
+          }
+        }
+        .MuiCardHeader-title {
+          font-size: 0.875rem !important;
+          font-weight: 400 !important;
+        }
+        
+        .MuiListItem-gutters {
+          padding: 0;
+          .MuiListItemIcon-root {
+            min-width: 25px;
+          }
+          .location-icon {
+            color: #3f51b5
+          }
+        }
+  
+        .MuiPaper-root {
+          height: 100%;
+        }
+    
+        .event-date-time {
+          ul {
+            display: flex;
+            li {
+              padding: 0 8px;
+              .MuiListItemIcon-root {
+                min-width: 20px;
+                .MuiSvgIcon-root {
+                  font-size: 14px;
+                }
+              }
+              .MuiListItemText-root {
+               span {
+                 font-size: 12px;
+               }
+              }
+            }
+          }
+        }
+    
+        .MuiCardActions-root {
+          .meeting-card_btn {
+            font-size: 12px;
+            border-radius: 15px;
+            /* width: 50%; */
+            height: 30px;
+          }
+          .confirm_btn {
+            color: #3f51b5;
+            background: #dce1ec;
+          }
+
+          .cancel_btn {
+            color: #ef5a5c;
+            background: #ffdee5;
+          }
+
+          .MuiIconButton-label {
+            margin-left: 12px;
+            .MuiSvgIcon-root {
+              font-size: 17px;
+              position: absolute;
+              left: 4px;
+              background: #fff;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .notification-widget {
+    .MuiCard-root {
+      .MuiCardHeader-content {
+        span {
+          font-size: 1rem;
+          color: #fff;
+        }
+
+        .MuiCardHeader-title {
+          font-weight: 700;
+        }
+        .MuiCardHeader-subheader {
+          font-weight: 600;
+          opacity: 0.7;
+        }
+
+        .MuiCardHeader-action button {
+          color: #fff;
+        }
+      }
+
+      .MuiCardContent-root {
+        .MuiGrid-item {
+          .MuiListItem-container {
+            .MuiListItem-gutters {
+              span {
+                color: #2E2A60;
+                font-size: 14px;
+              }
+            }
+            .MuiIconButton-label {
+              color: #fff;
+            }
+          }
+          
+          .MuiListItemIcon-root {
+            min-width: 30px;
+            .dot-icon {
+              font-size: 16px;
+              color: #ffc710;
+              
+            }
+          }
+
+          .notification-member {
+            span {
+              font-size: 14px;
+              color: #fff;
+              min-width: 100px;
+              border-right: 1px solid #cfe3a7;
+            }
+          }
+
+          .notification-group {
+            span {
+              margin-left: 20px;
+              color: #cfe3a7;
+              // opacity: 0.7;
+            }
+          }
+        }
+
+        .canceled-date {
+          .MuiListItemIcon-root {
+            min-width: 30px;
+            color: #fff
+          }
+          div {
+            span {
+              font-size: 13px;
+              color: #fff
+            }
+          }
+        }
+      }
+    }
+  }
+}

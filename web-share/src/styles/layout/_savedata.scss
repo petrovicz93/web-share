@@ -1,0 +1,158 @@
+.upload-image-alert-message {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.uploader {
+  display: block;
+  clear: both;
+  margin: 20px auto 0;
+  width: 100%;
+  max-width: 600px;
+
+  p {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 14px;
+  }
+
+  #image-drag {
+    float: left;
+    clear: both;
+    width: 100%;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 7px;
+    border: 3px solid #eee;
+    transition: all 0.2s ease;
+    user-select: none;
+    height: 280px;
+    display: flex;
+
+    &:hover {
+      border-color: #218838;
+    }
+    &.hover {
+      border: 3px solid #218838;
+      box-shadow: inset 0 0 0 6px #eee;
+
+      #start {
+        i.fa {
+          transform: scale(0.8);
+          opacity: 0.3;
+        }
+      }
+    }
+  }
+
+  #start {
+    float: left;
+    clear: both;
+    width: 100%;
+    &.hidden {
+      display: none;
+    }
+    i.fa {
+      font-size: 50px;
+      margin-bottom: 1rem;
+      transition: all 0.2s ease-in-out;
+    }
+  }
+  #response {
+    float: left;
+    clear: both;
+    width: 100%;
+    &.hidden {
+      display: none;
+    }
+    #messages {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  #file-image {
+    margin: 0 auto 0.5rem auto;
+    width: auto;
+    height: 100%;
+    // max-width: 180px;
+    // display: inline;
+    &.hidden {
+      display: none;
+    }
+  }
+
+  #notimage {
+    display: block;
+    float: left;
+    clear: both;
+    width: 100%;
+    &.hidden {
+      display: none;
+    }
+  }
+
+  input[type='file'] {
+    display: none;
+  }
+
+  div {
+    margin: 0 0 0.5rem 0;
+    // color: $dark-text;
+  }
+  .btn {
+    display: inline-block;
+    margin: 0.5rem 0.5rem 1rem 0.5rem;
+    clear: both;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: initial;
+    border: none;
+    border-radius: 0.2rem;
+    outline: none;
+    padding: 0 1rem;
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+    // background: $theme;
+    // border-color: $theme;
+    cursor: pointer;
+  }
+
+  .error {
+    text-align: left;
+    color: red;
+  }
+
+  #session_image_section {
+    display: none !important;
+  }
+
+  #session-image {
+    display: none;
+  }
+}
+
+.save-btn-form-group {
+  text-align: center;
+
+  .btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+  }
+
+  .btn {
+    margin: 0px 3px;
+    font-size: 12px;
+  }
+}

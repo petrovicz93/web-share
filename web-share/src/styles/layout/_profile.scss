@@ -1,0 +1,135 @@
+.profile_page-body {
+  display: flex;
+}
+
+.profile_page {
+  &-menu {
+    width: 250px;
+  }
+
+  &-menu {
+    padding-left: 20px;
+
+    .nav {
+      a {
+        padding: 5px 10px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    a {
+      font-size: 14px;
+      font-weight: 500;
+      color: $dark;
+      border-left: 2px solid transparent;
+
+      &.active {
+        color: #94c03d;
+        border-left: 2px solid #94c03d;
+      }
+    }
+  }
+
+  .page_section-row {
+    button {
+      outline: none !important;
+
+      span {
+        outline: none !important;
+      }
+    }
+
+    .page_section-button--text {
+      color: #67af45;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+
+.profile_page-title {
+  font-size: 18px;
+  font-weight: 500;
+  border-bottom: 2px solid #888b8c;
+}
+
+.profile_page-section {
+  padding: 0 10px 25px 10px;
+  border-bottom: 1px solid #888b8c;
+
+  .page_section-row {
+    display: flex;
+    margin-top: 25px;
+
+    .section-row_label {
+      min-width: 80px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .section-row_label--small {
+      font-size: 12px;
+      font-weight: 400;
+      min-width: 120px;
+    }
+
+    .section-row_label--button {
+      font-size: 12px;
+      font-weight: 500;
+      color: #67af45;
+      cursor: pointer;
+    }
+
+    .btn-group-toggle {
+      width: 150px;
+      margin-top: 20px;
+
+      label {
+        font-size: 11px;
+      }
+    }
+  }
+
+  .page_section-row--sub {
+    margin-bottom: -10px;
+  }
+}
+
+.profile_page-settings {
+  width: 100%;
+  padding: 20px;
+  font-size: 12px;
+  background: white;
+}
+
+.profile_page-notifications {
+  width: 100%;
+  padding: 20px;
+  font-size: 12px;
+  background: white;
+
+  svg {
+    font-size: 20px;
+  }
+}
+
+.profile_page-security {
+  width: 100%;
+  padding: 20px;
+  font-size: 12px;
+  background: white;
+
+  svg {
+    font-size: 20px;
+  }
+}
+
+.btn-green--bg {
+  background-color: #888b8c !important;
+}
+
+.btn-green--bg.active {
+  background-color: #94c03d !important;
+}

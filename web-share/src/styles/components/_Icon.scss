@@ -1,0 +1,23 @@
+.with-counter {
+  position: relative;
+}
+
+.header-icon {
+  span {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+  }
+  margin: 15px;
+}
+
+.sidebar-icon {
+  span {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    border: none;
+  }
+}
+
+

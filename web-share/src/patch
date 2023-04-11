@@ -1,0 +1,45 @@
+diff --git a/src/i18n.js b/src/i18n.js
+index f4dfbb1..8cc49c8 100644
+--- a/src/i18n.js
++++ b/src/i18n.js
+@@ -18,16 +18,16 @@ const jaTranslationMessages = require('./translations/ja.json');
+ // addLocaleData(enLocaleData);
+ // addLocaleData(deLocaleData);
+
+-const DEFAULT_LOCALE = 'en-US';
++export const DEFAULT_LOCALE = 'en-US';
+
+ // prettier-ignore
+-const appLocales = [
++export const appLocales = [
+   'en-US',
+   'de',
+   'ja'
+ ];
+
+-const formatTranslationMessages = (locale, messages) => {
++export const formatTranslationMessages = (locale, messages) => {
+   const defaultFormattedMessages =
+     locale !== DEFAULT_LOCALE
+       ? formatTranslationMessages(DEFAULT_LOCALE, enTranslationMessages)
+@@ -42,13 +42,13 @@ const formatTranslationMessages = (locale, messages) => {
+   return Object.keys(messages).reduce(flattenFormattedMessages, {});
+ };
+
+-const translationMessages = {
++export const translationMessages = {
+   [`en-US`]: formatTranslationMessages('en-US', enTranslationMessages),
+   de: formatTranslationMessages('de', deTranslationMessages),
+   ja: formatTranslationMessages('ja', jaTranslationMessages),
+ };
+
+-exports.appLocales = appLocales;
+-exports.formatTranslationMessages = formatTranslationMessages;
+-exports.translationMessages = translationMessages;
+-exports.DEFAULT_LOCALE = DEFAULT_LOCALE;
++// exports.translationMessages = translationMessages;
++// exports.appLocales = appLocales;
++// exports.formatTranslationMessages = formatTranslationMessages;
++// exports.DEFAULT_LOCALE = DEFAULT_LOCALE;
+
+

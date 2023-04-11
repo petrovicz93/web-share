@@ -1,0 +1,139 @@
+.group-section {
+  background: #f8faff;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  min-height: calc(100vh - 120px);
+
+  .show-grid.row {
+    position: relative;
+    .card-pagination {
+      position: absolute;
+      bottom: 10px;
+      right: 57px;
+    }
+  }
+
+  .Mui-selected {
+    background: #94c03d !important;
+    .MuiToggleButton-label {
+      color: #fff;
+    }
+  }
+
+  .card-list-view {
+    padding-bottom: 40px;
+  }
+
+  .card-pagination {
+    .MuiPaginationItem-page {
+      border: solid 1px #94c03d;
+      color: #94c03d;
+      font-size: 14px;
+    }
+    .Mui-selected {
+      background: #94c03d !important;
+      color: #fff;
+    }
+    .MuiPaginationItem-icon {
+      font-size: 14px;
+    }
+  }
+
+  .toggle-button-group {
+    text-align: right;
+    padding: 20px 60px 0 0;
+  }
+
+  .list-view-section {
+    // padding: 20px 0;
+    font-size: 14px;
+
+    .search-label {
+      input {
+        font-size: 14px;
+      }
+    }
+
+    .group-image {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #f8faff;
+      overflow: hidden;
+      margin: auto;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .react-bootstrap-table-pagination-list {
+      .pagination {
+        float: right;
+      }
+      .page-item .page-link {
+        color: #94c03d;
+        height: 32px;
+        min-width: 32px;
+        text-align: center;
+        margin: 0 3px;
+        border-radius: 4px;
+        border: solid 1px;
+        background: transparent;
+        &:hover {
+          background-color: #eee;
+          border-color: #ddd;
+          border: solid 1px #94c03d;
+        }
+      }
+      .active .page-link {
+        background-color: #94c03d;
+        color: #fff;
+        &:hover {
+          background-color: #94c03d;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  .row {
+    margin: 0 !important;
+  }
+  .group-card {
+    padding: 15px 45px;
+    .card {
+      height: 120px;
+      cursor: pointer;
+      .group-image {
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #f8faff;
+        overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .card-body {
+        .card-title {
+          margin-left: 50px;
+          font-size: 14px;
+        }
+        .card-subtitle {
+          margin-left: 50px;
+          font-size: 12px;
+        }
+        .card-text {
+          margin-top: 20px;
+          margin-left: 10px;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}

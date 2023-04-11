@@ -1,0 +1,29 @@
+FROM node:14-slim as base
+
+# Setup env
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+ENV ENTRYKIT_VERSION 0.4.0
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    wget \
+    ca-certificates \
+    git \
+    && apt-get clean
+
+RUN wget https://github.com/progrium/entrykit/releases/download/v${ENTRYKIT_VERSION}/entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+    && tar -xvzf entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+    && rm entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+    && mv entrykit /bin/entrykit \
+    && chmod +x /bin/entrykit \
+    && entrykit --symlink
+
+WORKDIR /home/node/app
+
+COPY scripts/ /opt/bin/
+
+ENTRYPOINT [ \
+    "prehook", "/opt/bin/docker-setup.sh", "--", \
+    "/opt/bin/docker-entrypoint.sh"]

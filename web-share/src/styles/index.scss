@@ -1,0 +1,25 @@
+// Overall styleguide
+@import 'normalization';
+
+@import 'custom.scss';
+
+@import '~bootstrap/scss/bootstrap';
+// Overall layout
+
+@import 'layout/dashboard';
+@import 'layout/savedata';
+@import 'layout/shared';
+@import 'layout/fileshare';
+@import 'layout/profile';
+@import 'layout/login';
+@import 'layout/group';
+@import 'layout/contact';
+@import 'layout/calendar';
+
+// Components
+@import 'components/Header';
+@import 'components/Icon';
+@import 'components/Counter';
+@import 'components/Avatar';
+@import 'components/Sidebar';
+@import 'components/ReactFlagsSelect';

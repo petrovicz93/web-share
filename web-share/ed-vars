@@ -1,0 +1,2414 @@
+warning: LF will be replaced by CRLF in src/pages/SignUp/Form.js.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in src/pages/SignUp/MemberTextFields.js.
+The file will have its original line endings in your working directory
+[1mdiff --git a/package.json b/package.json[m
+[1mindex 98238f3..f12395e 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -11,7 +11,6 @@[m
+     "@testing-library/jest-dom": "^4.2.4",[m
+     "@testing-library/react": "^9.3.2",[m
+     "@testing-library/user-event": "^7.1.2",[m
+[31m-    "antd": "^4.3.5",[m
+     "axios": "^0.19.2",[m
+     "bootstrap": "^4.5.0",[m
+     "classnames": "^2.2.6",[m
+[1mdiff --git a/src/containers/SignUp/index.js b/src/containers/SignUp/index.js[m
+[1mdeleted file mode 100644[m
+[1mindex 482e4d9..0000000[m
+[1m--- a/src/containers/SignUp/index.js[m
+[1m+++ /dev/null[m
+[36m@@ -1,1610 +0,0 @@[m
+[31m-import React from 'react';[m
+[31m-import { Select, DatePicker } from 'antd';[m
+[31m-import moment from 'moment';[m
+[31m-import { connect } from 'react-redux';[m
+[31m-[m
+[31m-import * as apiService from '../../config/api.service';[m
+[31m-[m
+[31m-import AmeraSignUpImage from '../../assets/img/amera-signup-image.jpg';[m
+[31m-import ProfilePictureCoverImage from '../../assets/img/profile-picture-cover.png';[m
+[31m-import Header from '../../pages/Sections/Header';[m
+[31m-[m
+[31m-const { Option } = Select;[m
+[31m-[m
+[31m-class SignUp extends React.Component {[m
+[31m-  constructor(props) {[m
+[31m-    super(props);[m
+[31m-[m
+[31m-    this.state = {[m
+[31m-      signUpData: {[m
+[31m-        firstName: '',[m
+[31m-        middleName: '',[m
+[31m-        lastName: '',[m
+[31m-        userName: '',[m
+[31m-        country: '',[m
+[31m-        email: '',[m
+[31m-        cellNumber: '',[m
+[31m-        dob: '',[m
+[31m-        gender: 'M',[m
+[31m-        postalCode: '',[m
+[31m-        city: '',[m
+[31m-        state: '',[m
+[31m-        password: '',[m
+[31m-        twoFactorAuth: '0',[m
+[31m-      },[m
+[31m-      // temp states for localstorage purpose[m
+[31m-      confirmEmail: '',[m
+[31m-      confirmCellNumber: '',[m
+[31m-      confirmPassword: '',[m
+[31m-      myPublicIP: '',[m
+[31m-    };[m
+[31m-[m
+[31m-    this.imageInput = React.createRef();[m
+[31m-    this.profilePictureEl = React.createRef();[m
+[31m-[m
+[31m-    this.emailEl = React.createRef();[m
+[31m-    this.emailInvalidFeedbackEl = React.createRef();[m
+[31m-    this.confirmEmailEl = React.createRef();[m
+[31m-    this.confirmEmailInvalidFeedbackEl = React.createRef();[m
+[31m-    this.cellNumberEl = React.createRef();[m
+[31m-    this.cellNumberInvalidFeedbackEl = React.createRef();[m
+[31m-    this.confirmCellNumberEl = React.createRef();[m
+[31m-    this.confirmCellNumberInvalidFeedbackEl = React.createRef();[m
+[31m-    this.passwordEl = React.createRef();[m
+[31m-    this.confirmPassEl = React.createRef();[m
+[31m-    this.confirmPassInvalidFeedbackEl = React.createRef();[m
+[31m-    this.dobInvalidFeedbackEl = React.createRef();[m
+[31m-  }[m
+[31m-[m
+[31m-  componentDidMount() {[m
+[31m-    this.restoreSignUpSession();[m
+[31m-    this.props.dispatch(apiService.getMemberLocationInfo());[m
+[31m-  }[m
+[31m-  componentDidUpdate(prevProps) {[m
+[31m-    if (prevProps.locationInfo === null && this.props.locationInfo !== null) {[m
+[31m-      this.setFormLocationData(this.props.locationInfo);[m
+[31m-    }[m
+[31m-  }[m
+[31m-  setFormLocationData = (locationInfo) => {[m
+[31m-    let { signUpData } = this.state;[m
+[31m-    signUpData['country'] = locationInfo.countryCode;[m
+[31m-    signUpData['state'] = locationInfo.regionName;[m
+[31m-    signUpData['city'] = locationInfo.city;[m
+[31m-    signUpData['postalCode'] = locationInfo.zip;[m
+[31m-    this.setState({ signUpData });[m
+[31m-  };[m
+[31m-[m
+[31m-  isLessThanOneHour = (date) => {[m
+[31m-    let ONE_HOUR = 60 * 60 * 1000; /* ms */[m
+[31m-    return new Date() - new Date(date) < ONE_HOUR;[m
+[31m-  };[m
+[31m-  getSignupSession = () => {[m
+[31m-    let signupSessionString = window.localStorage.getItem('signupSession'),[m
+[31m-      signupSession =[m
+[31m-        signupSessionString !== '' ? JSON.parse(signupSessionString) : '';[m
+[31m-    return signupSession;[m
+[31m-  };[m
+[31m-  clearSignupSession = () => {[m
+[31m-    window.localStorage.setItem('signupSession', '');[m
+[31m-  };[m
+[31m-  restoreSignUpSession = () => {[m
+[31m-    let signupSession = this.getSignupSession(),[m
+[31m-      {[m
+[31m-        signUpData,[m
+[31m-        confirmEmail,[m
+[31m-        confirmCellNumber,[m
+[31m-        confirmPassword,[m
+[31m-      } = this.state;[m
+[31m-[m
+[31m-    if (signupSession) {[m
+[31m-      let fieldNames = Object.keys(signupSession),[m
+[31m-        fromTime = signupSession['fromTime'];[m
+[31m-      if (this.isLessThanOneHour(fromTime)) {[m
+[31m-        fieldNames.forEach((name) => {[m
+[31m-          if (name === 'confirmEmail') {[m
+[31m-            confirmEmail = signupSession[name];[m
+[31m-          } else if (name === 'confirmCellNumber') {[m
+[31m-            confirmCellNumber = signupSession[name];[m
+[31m-          } else if (name === 'confirmPassword') {[m
+[31m-            confirmPassword = signupSession[name];[m
+[31m-          } else {[m
+[31m-            signUpData[name] = signupSession[name];[m
+[31m-          }[m
+[31m-        });[m
+[31m-        this.setState({ confirmEmail, confirmCellNumber, confirmPassword });[m
+[31m-      } else {[m
+[31m-        this.clearSignupSession();[m
+[31m-      }[m
+[31m-    }[m
+[31m-  };[m
+[31m-[m
+[31m-  onChange = (e) => {[m
+[31m-    let { signUpData } = this.state;[m
+[31m-    const key = e.target.name;[m
+[31m-    const value = e.target.value;[m
+[31m-    console.log(e);[m
+[31m-    this.storeFieldToLocalStorage(key, value);[m
+[31m-[m
+[31m-    if (key === 'confirmEmail') {[m
+[31m-      this.setState({ confirmEmail: value });[m
+[31m-    } else if (key === 'confirmCellNumber') {[m
+[31m-      this.setState({ confirmCellNumber: value });[m
+[31m-    } else if (key === 'confirmPassword') {[m
+[31m-      this.setState({ confirmPassword: value });[m
+[31m-    } else {[m
+[31m-      signUpData[key] = value;[m
+[31m-      this.setState({ signUpData });[m
+[31m-    }[m
+[31m-  };[m
+[31m-[m
+[31m-  storeFieldToLocalStorage = (key, value) => {[m
+[31m-    let signupSessionString = window.localStorage.getItem('signupSession');[m
+[31m-    let signupSession;[m
+[31m-    if (signupSessionString !== '') {[m
+[31m-      signupSession = JSON.parse(signupSessionString);[m
+[31m-    }[m
+[31m-    if (signupSession) {[m
+[31m-      signupSession[key] = value;[m
+[31m-    } else {[m
+[31m-      signupSession = {};[m
+[31m-      signupSession[key] = value;[m
+[31m-    }[m
+[31m-    signupSession['fromTime'] = new Date();[m
+[31m-    window.localStorage.setItem('signupSession', JSON.stringify(signupSession));[m
+[31m-  };[m
+[31m-[m
+[31m-  onImageSelect = (e) => {[m
+[31m-    const input = this.imageInput.current;[m
+[31m-    const profilePictureEl = this.profilePictureEl.current;[m
+[31m-    if (input.files && input.files[0]) {[m
+[31m-      var reader = new FileReader();[m
+[31m-      reader.onload = function (e) {[m
+[31m-        profilePictureEl.src = e.target.result;[m
+[31m-      };[m
+[31m-      reader.readAsDataURL(input.files[0]);[m
+[31m-    }[m
+[31m-  };[m
+[31m-[m
+[31m-  validateEmail = (email) => {[m
+[31m-    // eslint-disable-next-line[m
+[31m-    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;[m
+[31m-    return re.test(email);[m
+[31m-  };[m
+[31m-  validateCellNumber = (cellNumber) => {[m
+[31m-    const formattedNumber = /^\(?([0-9]{3})\)?[-]?([0-9]{3})[-]?([0-9]{4})$/;[m
+[31m-    return cellNumber.match(formattedNumber);[m
+[31m-  };[m
+[31m-  matchValues = (val1, val2) => {[m
+[31m-    return val1 === val2;[m
+[31m-  };[m
+[31m-[m
+[31m-  validateForm = () => {[m
+[31m-    let { signUpData } = this.state,[m
+[31m-      emailEl = this.emailEl.current,[m
+[31m-      emailInvalidFeedbackEl = this.emailInvalidFeedbackEl.current,[m
+[31m-      confirmEmailEl = this.confirmEmailEl.current,[m
+[31m-      confirmEmailInvalidFeedbackEl = this.confirmEmailInvalidFeedbackEl[m
+[31m-        .current,[m
+[31m-      cellNumberEl = this.cellNumberEl.current,[m
+[31m-      cellNumberInvalidFeedbackEl = this.cellNumberInvalidFeedbackEl.current,[m
+[31m-      confirmCellNumberEl = this.confirmCellNumberEl.current,[m
+[31m-      confirmCellNumberInvalidFeedbackEl = this[m
+[31m-        .confirmCellNumberInvalidFeedbackEl.current,[m
+[31m-      passwordEl = this.passwordEl.current,[m
+[31m-      confirmPassEl = this.confirmPassEl.current,[m
+[31m-      confirmPassInvalidFeedbackEl = this.confirmPassInvalidFeedbackEl.current,[m
+[31m-      dobInvalidFeedbackEl = this.dobInvalidFeedbackEl.current;[m
+[31m-[m
+[31m-    if (this.validateEmail(emailEl.value)) {[m
+[31m-      //validate email structure[m
+[31m-      emailEl.style.borderColor = '#006400';[m
+[31m-      emailInvalidFeedbackEl.classList.remove('d-block');[m
+[31m-    } else {[m
+[31m-      emailEl.style.borderColor = '#c70000';[m
+[31m-      emailInvalidFeedbackEl.classList.add('d-block');[m
+[31m-      return false;[m
+[31m-    }[m
+[31m-[m
+[31m-    if (this.matchValues(emailEl.value, confirmEmailEl.value)) {[m
+[31m-      confirmEmailEl.style.borderColor = '#006400';[m
+[31m-      confirmEmailInvalidFeedbackEl.classList.remove('d-block');[m
+[31m-    } else {[m
+[31m-      confirmEmailEl.style.borderColor = '#c70000';[m
+[31m-      confirmEmailInvalidFeedbackEl.classList.add('d-block');[m
+[31m-      return false;[m
+[31m-    }[m
+[31m-[m
+[31m-    if (this.validateCellNumber(cellNumberEl.value)) {[m
+[31m-      cellNumberEl.style.borderColor = '#006400';[m
+[31m-      cellNumberInvalidFeedbackEl.classList.remove('d-block');[m
+[31m-    } else {[m
+[31m-      cellNumberEl.style.borderColor = '#c70000';[m
+[31m-      cellNumberInvalidFeedbackEl.classList.add('d-block');[m
+[31m-      return false;[m
+[31m-    }[m
+[31m-[m
+[31m-    if (this.matchValues(cellNumberEl.value, confirmCellNumberEl.value)) {[m
+[31m-      confirmCellNumberEl.style.borderColor = '#006400';[m
+[31m-      confirmCellNumberInvalidFeedbackEl.classList.remove('d-block');[m
+[31m-    } else {[m
+[31m-      confirmCellNumberEl.style.borderColor = '#c70000';[m
+[31m-      confirmCellNumberInvalidFeedbackEl.classList.add('d-block');[m
+[31m-      return false;[m
+[31m-    }[m
+[31m-[m
+[31m-    if (this.matchValues(passwordEl.value, confirmPassEl.value)) {[m
+[31m-      confirmPassEl.style.borderColor = '#006400';[m
+[31m-      passwordEl.style.borderColor = '#006400';[m
+[31m-      confirmPassInvalidFeedbackEl.classList.remove('d-block');[m
+[31m-    } else {[m
+[31m-      confirmPassEl.style.borderColor = '#c70000';[m
+[31m-      confirmPassInvalidFeedbackEl.classList.add('d-block');[m
+[31m-      return false;[m
+[31m-    }[m
+[31m-[m
+[31m-    if (signUpData.dob) {[m
+[31m-      document.getElementsByClassName('dob-date-picker')[0].style.borderColor =[m
+[31m-        '#006400';[m
+[31m-      dobInvalidFeedbackEl.classList.remove('d-block');[m
+[31m-    } else {[m
+[31m-      document.getElementsByClassName('dob-date-picker')[0].style.borderColor =[m
+[31m-        '#c70000';[m
+[31m-      dobInvalidFeedbackEl.classList.add('d-block');[m
+[31m-      return false;[m
+[31m-    }[m
+[31m-[m
+[31m-    return true;[m
+[31m-  };[m
+[31m-[m
+[31m-  submitForm = (e) => {[m
+[31m-    e.preventDefault(e);[m
+[31m-    if (this.validateForm()) {[m
+[31m-      console.log('Form validated now submitting form..... ');[m
+[31m-    }[m
+[31m-  };[m
+[31m-[m
+[31m-  renderPageHeader = () => {[m
+[31m-    return <Header showOnlyHeaderText={true} headerText="Enrollment" />;[m
+[31m-  };[m
+[31m-[m
+[31m-  render() {[m
+[31m-    const {[m
+[31m-      signUpData,[m
+[31m-      confirmEmail,[m
+[31m-      confirmCellNumber,[m
+[31m-      confirmPassword,[m
+[31m-      myPublicIP,[m
+[31m-    } = this.state;[m
+[31m-    console.log(this.state);[m
+[31m-    return ([m
+[31m-      <div className="container-fluid">[m
+[31m-        <div className="row">{this.renderPageHeader()}</div>[m
+[31m-        <div className="row signup-col-container">[m
+[31m-          <div className="signup-image-section">[m
+[31m-            <div className="signup-image">[m
+[31m-              <img[m
+[31m-                src={AmeraSignUpImage}[m
+[31m-                width="100%"[m
+[31m-                height="100%"[m
+[31m-                alt="signup"[m
+[31m-              />[m
+[31m-            </div>[m
+[31m-            <div className="signup-image-text">[m
+[31m-              <p id="signup-image-text-bg">CREATE ACCOUNT</p>[m
+[31m-              <p id="signup-image-text-sm">with us</p>[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          <div className="signup-form">[m
+[31m-            <form[m
+[31m-              onSubmit={this.submitForm.bind(this)}[m
+[31m-              method="POST"[m
+[31m-              id="signup"[m
+[31m-            >[m
+[31m-              <div className="form-row row">[m
+[31m-                <div className="col-12 form-group" data-for="ip">[m
+[31m-                  <label[m
+[31m-                    htmlFor="ip"[m
+[31m-                    className="form-input-label"[m
+[31m-                    id="sign-up002"[m
+[31m-                  >[m
+[31m-                    IP Address:{'\u00A0'}[m
+[31m-                    {'\u00A0'}[m
+[31m-                    <span style={{ letterSpacing: '0.5px' }}>{myPublicIP}</span>[m
+[31m-                  </label>[m
+[31m-                </div>[m
+[31m-                <div className="row col-12">[m
+[31m-                  <div[m
+[31m-                    className="col-lg-5 col-md-5 col-sm-12 col-xs-12 form-group"[m
+[31m-                    style={{ marginBottom: '0' }}[m
+[31m-                  >[m
+[31m-                    <div className="form-input-control" data-for="firstName">[m
+[31m-                      <label[m
+[31m-                        htmlFor="firstName"[m
+[31m-                        id="sign-up253"[m
+[31m-                        className="form-input-label"[m
+[31m-                      >[m
+[31m-                        Name[m
+[31m-                      </label>[m
+[31m-                      <input[m
+[31m-                        onChange={this.onChange.bind(this)}[m
+[31m-                        type="text"[m
+[31m-                        name="firstName"[m
+[31m-                        value={signUpData.firstName}[m
+[31m-                        placeholder="First Name"[m
+[31m-                        required="required"[m
+[31m-                        className="form-control"[m
+[31m-                      />[m
+[31m-                    </div>[m
+[31m-                    <div[m
+[31m-                      className="form-input-control"[m
+[31m-                      data-for="middleName"[m
+[31m-                      style={{ paddingTop: '12px' }}[m
+[31m-                    >[m
+[31m-                      <input[m
+[31m-                        onChange={this.onChange.bind(this)}[m
+[31m-                        type="text"[m
+[31m-                        name="middleName"[m
+[31m-                        value={signUpData.middleName}[m
+[31m-                        placeholder="Middle Initial"[m
+[31m-                        className="form-control"[m
+[31m-                      />[m
+[31m-                    </div>[m
+[31m-                    <div[m
+[31m-                      className="form-input-control"[m
+[31m-                      data-for="lastName"[m
+[31m-                      style={{ paddingTop: '12px' }}[m
+[31m-                    >[m
+[31m-                      <input[m
+[31m-                        onChange={this.onChange.bind(this)}[m
+[31m-                        type="text"[m
+[31m-                        name="lastName"[m
+[31m-                        value={signUpData.lastName}[m
+[31m-                        placeholder="Last Name"[m
+[31m-                        required="required"[m
+[31m-                        className="form-control"[m
+[31m-                      />[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                  <div[m
+[31m-                    className="col-lg-5 col-md-5 col-sm-12 col-xs-12 form-group"[m
+[31m-                    style={{ marginBottom: '0' }}[m
+[31m-                  >[m
+[31m-                    <div className="form-input-control">[m
+[31m-                      <label htmlFor="image" className="form-input-label">[m
+[31m-                        Profile Picture[m
+[31m-                      </label>[m
+[31m-                    </div>[m
+[31m-                    <div className="form-input-control">[m
+[31m-                      <img[m
+[31m-                        src={ProfilePictureCoverImage}[m
+[31m-                        ref={this.profilePictureEl}[m
+[31m-                        width="120"[m
+[31m-                        height="120"[m
+[31m-                        className="rounded-circle mx-auto d-block"[m
+[31m-                        id="profile-picture"[m
+[31m-                        alt="ProfilePicture"[m
+[31m-                      />[m
+[31m-                    </div>[m
+[31m-                    <div className="form-input-control">[m
+[31m-                      <input[m
+[31m-                        id="image-input"[m
+[31m-                        ref={this.imageInput}[m
+[31m-                        onChange={this.onImageSelect.bind(this)}[m
+[31m-                        type="file"[m
+[31m-                        name="profile_photo"[m
+[31m-                        placeholder="Photo"[m
+[31m-                        required=""[m
+[31m-                        capture[m
+[31m-                      />[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="row col-12">[m
+[31m-                  <div[m
+[31m-                    data-for="userName"[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="userName"[m
+[31m-                      id="sign-up254"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Username[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      type="text"[m
+[31m-                      name="userName"[m
+[31m-                      value={signUpData.userName}[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                  </div>[m
+[31m-                  <div[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                    data-for="country"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="country"[m
+[31m-                      id="sign-up003"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Country[m
+[31m-                    </label>[m
+[31m-                    <Select[m
+[31m-                      showSearch[m
+[31m-                      onSelect={(value) =>[m
+[31m-                        this.onChange({ target: { name: 'country', value } })[m
+[31m-                      } //onSelect store country value to state and localStorage[m
+[31m-                      name="country"[m
+[31m-                      size="large"[m
+[31m-                      style={{ border: 'none' }}[m
+[31m-                      className="form-control"[m
+[31m-                      optionFilterProp="children"[m
+[31m-                      value={signUpData.country}[m
+[31m-                      filterOption={(input, option) =>[m
+[31m-                        option.children[m
+[31m-                          .toLowerCase()[m
+[31m-                          .indexOf(input.toLowerCase()) >= 0[m
+[31m-                      }[m
+[31m-                    >[m
+[31m-                      <Option value="AF" id="sign-up004">[m
+[31m-                        Afghanistan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AX" id="sign-up005">[m
+[31m-                        Åland Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AL" id="sign-up006">[m
+[31m-                        Albania[m
+[31m-                      </Option>[m
+[31m-                      <Option value="DZ" id="sign-up007">[m
+[31m-                        Algeria[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AS" id="sign-up008">[m
+[31m-                        American Samoa[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AD" id="sign-up009">[m
+[31m-                        Andorra[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AO" id="sign-up010">[m
+[31m-                        Angola[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AI" id="sign-up011">[m
+[31m-                        Anguilla[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AQ" id="sign-up012">[m
+[31m-                        Antarctica[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AG" id="sign-up013">[m
+[31m-                        Antigua and Barbuda[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AR" id="sign-up014">[m
+[31m-                        Argentina[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AM" id="sign-up015">[m
+[31m-                        Armenia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AW" id="sign-up016">[m
+[31m-                        Aruba[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AU" id="sign-up017">[m
+[31m-                        Australia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AT" id="sign-up018">[m
+[31m-                        Austria[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AZ" id="sign-up019">[m
+[31m-                        Azerbaijan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BS" id="sign-up020">[m
+[31m-                        Bahamas[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BH" id="sign-up021">[m
+[31m-                        Bahrain[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BD" id="sign-up022">[m
+[31m-                        Bangladesh[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BB" id="sign-up023">[m
+[31m-                        Barbados[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BY" id="sign-up024">[m
+[31m-                        Belarus[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BE" id="sign-up025">[m
+[31m-                        Belgium[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BZ" id="sign-up026">[m
+[31m-                        Belize[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BJ" id="sign-up027">[m
+[31m-                        Benin[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BM" id="sign-up028">[m
+[31m-                        Bermuda[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BT" id="sign-up029">[m
+[31m-                        Bhutan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BO" id="sign-up030">[m
+[31m-                        Bolivia, Plurinational State of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BQ" id="sign-up031">[m
+[31m-                        Bonaire, Sint Eustatius and Saba[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BA" id="sign-up032">[m
+[31m-                        Bosnia and Herzegovina[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BW" id="sign-up033">[m
+[31m-                        Botswana[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BV" id="sign-up034">[m
+[31m-                        Bouvet Island[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BR" id="sign-up035">[m
+[31m-                        Brazil[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IO" id="sign-up036">[m
+[31m-                        British Indian Ocean Territory[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BN" id="sign-up037">[m
+[31m-                        Brunei Darussalam[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BG" id="sign-up038">[m
+[31m-                        Bulgaria[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BF" id="sign-up039">[m
+[31m-                        Burkina Faso[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BI" id="sign-up040">[m
+[31m-                        Burundi[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KH" id="sign-up041">[m
+[31m-                        Cambodia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CM" id="sign-up042">[m
+[31m-                        Cameroon[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CA" id="sign-up043">[m
+[31m-                        Canada[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CV" id="sign-up044">[m
+[31m-                        Cape Verde[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KY" id="sign-up045">[m
+[31m-                        Cayman Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CF" id="sign-up046">[m
+[31m-                        Central African Republic[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TD" id="sign-up047">[m
+[31m-                        Chad[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CL" id="sign-up048">[m
+[31m-                        Chile[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CN" id="sign-up049">[m
+[31m-                        China[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CX" id="sign-up050">[m
+[31m-                        Christmas Island[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CC" id="sign-up051">[m
+[31m-                        Cocos (Keeling) Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CO" id="sign-up052">[m
+[31m-                        Colombia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KM" id="sign-up053">[m
+[31m-                        Comoros[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CG" id="sign-up054">[m
+[31m-                        Congo[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CD" id="sign-up055">[m
+[31m-                        Congo, the Democratic Republic of the[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CK" id="sign-up056">[m
+[31m-                        Cook Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CR" id="sign-up057">[m
+[31m-                        Costa Rica[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CI" id="sign-up058">[m
+[31m-                        Côte d'Ivoire[m
+[31m-                      </Option>[m
+[31m-                      <Option value="HR" id="sign-up059">[m
+[31m-                        Croatia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CU" id="sign-up060">[m
+[31m-                        Cuba[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CW" id="sign-up061">[m
+[31m-                        Curaçao[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CY" id="sign-up062">[m
+[31m-                        Cyprus[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CZ" id="sign-up063">[m
+[31m-                        Czech Republic[m
+[31m-                      </Option>[m
+[31m-                      <Option value="DK" id="sign-up064">[m
+[31m-                        Denmark[m
+[31m-                      </Option>[m
+[31m-                      <Option value="DJ" id="sign-up065">[m
+[31m-                        Djibouti[m
+[31m-                      </Option>[m
+[31m-                      <Option value="DM" id="sign-up066">[m
+[31m-                        Dominica[m
+[31m-                      </Option>[m
+[31m-                      <Option value="DO" id="sign-up067">[m
+[31m-                        Dominican Republic[m
+[31m-                      </Option>[m
+[31m-                      <Option value="EC" id="sign-up068">[m
+[31m-                        Ecuador[m
+[31m-                      </Option>[m
+[31m-                      <Option value="EG" id="sign-up069">[m
+[31m-                        Egypt[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SV" id="sign-up070">[m
+[31m-                        El Salvador[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GQ" id="sign-up071">[m
+[31m-                        Equatorial Guinea[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ER" id="sign-up072">[m
+[31m-                        Eritrea[m
+[31m-                      </Option>[m
+[31m-                      <Option value="EE" id="sign-up073">[m
+[31m-                        Estonia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ET" id="sign-up074">[m
+[31m-                        Ethiopia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="FK" id="sign-up075">[m
+[31m-                        Falkland Islands (Malvinas)[m
+[31m-                      </Option>[m
+[31m-                      <Option value="FO" id="sign-up076">[m
+[31m-                        Faroe Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="FJ" id="sign-up077">[m
+[31m-                        Fiji[m
+[31m-                      </Option>[m
+[31m-                      <Option value="FI" id="sign-up078">[m
+[31m-                        Finland[m
+[31m-                      </Option>[m
+[31m-                      <Option value="FR" id="sign-up079">[m
+[31m-                        France[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GF" id="sign-up080">[m
+[31m-                        French Guiana[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PF" id="sign-up081">[m
+[31m-                        French Polynesia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TF" id="sign-up082">[m
+[31m-                        French Southern Territories[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GA" id="sign-up083">[m
+[31m-                        Gabon[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GM" id="sign-up084">[m
+[31m-                        Gambia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GE" id="sign-up085">[m
+[31m-                        Georgia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="DE" id="sign-up086">[m
+[31m-                        Germany[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GH" id="sign-up087">[m
+[31m-                        Ghana[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GI" id="sign-up088">[m
+[31m-                        Gibraltar[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GR" id="sign-up089">[m
+[31m-                        Greece[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GL" id="sign-up090">[m
+[31m-                        Greenland[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GD" id="sign-up091">[m
+[31m-                        Grenada[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GP" id="sign-up092">[m
+[31m-                        Guadeloupe[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GU" id="sign-up093">[m
+[31m-                        Guam[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GT" id="sign-up094">[m
+[31m-                        Guatemala[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GG" id="sign-up095">[m
+[31m-                        Guernsey[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GN" id="sign-up096">[m
+[31m-                        Guinea[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GW" id="sign-up097">[m
+[31m-                        Guinea-Bissau[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GY" id="sign-up098">[m
+[31m-                        Guyana[m
+[31m-                      </Option>[m
+[31m-                      <Option value="HT" id="sign-up099">[m
+[31m-                        Haiti[m
+[31m-                      </Option>[m
+[31m-                      <Option value="HM" id="sign-up100">[m
+[31m-                        Heard Island and McDonald Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="VA" id="sign-up101">[m
+[31m-                        Holy See (Vatican City State)[m
+[31m-                      </Option>[m
+[31m-                      <Option value="HN" id="sign-up102">[m
+[31m-                        Honduras[m
+[31m-                      </Option>[m
+[31m-                      <Option value="HK" id="sign-up103">[m
+[31m-                        Hong Kong[m
+[31m-                      </Option>[m
+[31m-                      <Option value="HU" id="sign-up104">[m
+[31m-                        Hungary[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IS" id="sign-up105">[m
+[31m-                        Iceland[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IN" id="sign-up106">[m
+[31m-                        India[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ID" id="sign-up107">[m
+[31m-                        Indonesia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IR" id="sign-up108">[m
+[31m-                        Iran, Islamic Republic of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IQ" id="sign-up109">[m
+[31m-                        Iraq[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IE" id="sign-up110">[m
+[31m-                        Ireland[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IM" id="sign-up111">[m
+[31m-                        Isle of Man[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IL" id="sign-up112">[m
+[31m-                        Israel[m
+[31m-                      </Option>[m
+[31m-                      <Option value="IT" id="sign-up113">[m
+[31m-                        Italy[m
+[31m-                      </Option>[m
+[31m-                      <Option value="JM" id="sign-up114">[m
+[31m-                        Jamaica[m
+[31m-                      </Option>[m
+[31m-                      <Option value="JP" id="sign-up115">[m
+[31m-                        Japan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="JE" id="sign-up116">[m
+[31m-                        Jersey[m
+[31m-                      </Option>[m
+[31m-                      <Option value="JO" id="sign-up117">[m
+[31m-                        Jordan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KZ" id="sign-up118">[m
+[31m-                        Kazakhstan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KE" id="sign-up119">[m
+[31m-                        Kenya[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KI" id="sign-up120">[m
+[31m-                        Kiribati[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KP" id="sign-up121">[m
+[31m-                        Korea, Democratic People's Republic of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KR" id="sign-up122">[m
+[31m-                        Korea, Republic of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KW" id="sign-up123">[m
+[31m-                        Kuwait[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KG" id="sign-up124">[m
+[31m-                        Kyrgyzstan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LA" id="sign-up125">[m
+[31m-                        Lao People's Democratic Republic[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LV" id="sign-up126">[m
+[31m-                        Latvia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LB" id="sign-up127">[m
+[31m-                        Lebanon[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LS" id="sign-up128">[m
+[31m-                        Lesotho[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LR" id="sign-up129">[m
+[31m-                        Liberia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LY" id="sign-up130">[m
+[31m-                        Libya[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LI" id="sign-up131">[m
+[31m-                        Liechtenstein[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LT" id="sign-up132">[m
+[31m-                        Lithuania[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LU" id="sign-up133">[m
+[31m-                        Luxembourg[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MO" id="sign-up134">[m
+[31m-                        Macao[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MK" id="sign-up135">[m
+[31m-                        Macedonia, the former Yugoslav Republic of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MG" id="sign-up136">[m
+[31m-                        Madagascar[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MW" id="sign-up137">[m
+[31m-                        Malawi[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MY" id="sign-up138">[m
+[31m-                        Malaysia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MV" id="sign-up139">[m
+[31m-                        Maldives[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ML" id="sign-up140">[m
+[31m-                        Mali[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MT" id="sign-up141">[m
+[31m-                        Malta[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MH" id="sign-up142">[m
+[31m-                        Marshall Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MQ" id="sign-up143">[m
+[31m-                        Martinique[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MR" id="sign-up144">[m
+[31m-                        Mauritania[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MU" id="sign-up145">[m
+[31m-                        Mauritius[m
+[31m-                      </Option>[m
+[31m-                      <Option value="YT" id="sign-up146">[m
+[31m-                        Mayotte[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MX" id="sign-up147">[m
+[31m-                        Mexico[m
+[31m-                      </Option>[m
+[31m-                      <Option value="FM" id="sign-up148">[m
+[31m-                        Micronesia, Federated States of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MD" id="sign-up149">[m
+[31m-                        Moldova, Republic of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MC" id="sign-up150">[m
+[31m-                        Monaco[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MN" id="sign-up151">[m
+[31m-                        Mongolia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ME" id="sign-up152">[m
+[31m-                        Montenegro[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MS" id="sign-up153">[m
+[31m-                        Montserrat[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MA" id="sign-up154">[m
+[31m-                        Morocco[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MZ" id="sign-up155">[m
+[31m-                        Mozambique[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MM" id="sign-up156">[m
+[31m-                        Myanmar[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NA" id="sign-up157">[m
+[31m-                        Namibia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NR" id="sign-up158">[m
+[31m-                        Nauru[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NP" id="sign-up159">[m
+[31m-                        Nepal[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NL" id="sign-up160">[m
+[31m-                        Netherlands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NC" id="sign-up161">[m
+[31m-                        New Caledonia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NZ" id="sign-up162">[m
+[31m-                        New Zealand[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NI" id="sign-up163">[m
+[31m-                        Nicaragua[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NE" id="sign-up164">[m
+[31m-                        Niger[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NG" id="sign-up165">[m
+[31m-                        Nigeria[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NU" id="sign-up166">[m
+[31m-                        Niue[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NF" id="sign-up167">[m
+[31m-                        Norfolk Island[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MP" id="sign-up168">[m
+[31m-                        Northern Mariana Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="NO" id="sign-up169">[m
+[31m-                        Norway[m
+[31m-                      </Option>[m
+[31m-                      <Option value="OM" id="sign-up170">[m
+[31m-                        Oman[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PK" id="sign-up171">[m
+[31m-                        Pakistan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PW" id="sign-up172">[m
+[31m-                        Palau[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PS" id="sign-up173">[m
+[31m-                        Palestinian Territory, Occupied[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PA" id="sign-up174">[m
+[31m-                        Panama[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PG" id="sign-up175">[m
+[31m-                        Papua New Guinea[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PY" id="sign-up176">[m
+[31m-                        Paraguay[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PE" id="sign-up177">[m
+[31m-                        Peru[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PH" id="sign-up178">[m
+[31m-                        Philippines[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PN" id="sign-up179">[m
+[31m-                        Pitcairn[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PL" id="sign-up180">[m
+[31m-                        Poland[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PT" id="sign-up181">[m
+[31m-                        Portugal[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PR" id="sign-up182">[m
+[31m-                        Puerto Rico[m
+[31m-                      </Option>[m
+[31m-                      <Option value="QA" id="sign-up183">[m
+[31m-                        Qatar[m
+[31m-                      </Option>[m
+[31m-                      <Option value="RE" id="sign-up184">[m
+[31m-                        Réunion[m
+[31m-                      </Option>[m
+[31m-                      <Option value="RO" id="sign-up185">[m
+[31m-                        Romania[m
+[31m-                      </Option>[m
+[31m-                      <Option value="RU" id="sign-up186">[m
+[31m-                        Russian Federation[m
+[31m-                      </Option>[m
+[31m-                      <Option value="RW" id="sign-up187">[m
+[31m-                        Rwanda[m
+[31m-                      </Option>[m
+[31m-                      <Option value="BL" id="sign-up188">[m
+[31m-                        Saint Barthélemy[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SH" id="sign-up189">[m
+[31m-                        Saint Helena, Ascension and Tristan da Cunha[m
+[31m-                      </Option>[m
+[31m-                      <Option value="KN" id="sign-up190">[m
+[31m-                        Saint Kitts and Nevis[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LC" id="sign-up191">[m
+[31m-                        Saint Lucia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="MF" id="sign-up192">[m
+[31m-                        Saint Martin (French part)[m
+[31m-                      </Option>[m
+[31m-                      <Option value="PM" id="sign-up193">[m
+[31m-                        Saint Pierre and Miquelon[m
+[31m-                      </Option>[m
+[31m-                      <Option value="VC" id="sign-up194">[m
+[31m-                        Saint Vincent and the Grenadines[m
+[31m-                      </Option>[m
+[31m-                      <Option value="WS" id="sign-up195">[m
+[31m-                        Samoa[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SM" id="sign-up196">[m
+[31m-                        San Marino[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ST" id="sign-up197">[m
+[31m-                        Sao Tome and Principe[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SA" id="sign-up198">[m
+[31m-                        Saudi Arabia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SN" id="sign-up199">[m
+[31m-                        Senegal[m
+[31m-                      </Option>[m
+[31m-                      <Option value="RS" id="sign-up200">[m
+[31m-                        Serbia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SC" id="sign-up201">[m
+[31m-                        Seychelles[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SL" id="sign-up202">[m
+[31m-                        Sierra Leone[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SG" id="sign-up203">[m
+[31m-                        Singapore[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SX" id="sign-up204">[m
+[31m-                        Sint Maarten (Dutch part)[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SK" id="sign-up205">[m
+[31m-                        Slovakia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SI" id="sign-up206">[m
+[31m-                        Slovenia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SB" id="sign-up207">[m
+[31m-                        Solomon Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SO" id="sign-up208">[m
+[31m-                        Somalia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ZA" id="sign-up209">[m
+[31m-                        South Africa[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GS" id="sign-up210">[m
+[31m-                        South Georgia and the South Sandwich Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SS" id="sign-up211">[m
+[31m-                        South Sudan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ES" id="sign-up212">[m
+[31m-                        Spain[m
+[31m-                      </Option>[m
+[31m-                      <Option value="LK" id="sign-up213">[m
+[31m-                        Sri Lanka[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SD" id="sign-up214">[m
+[31m-                        Sudan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SR" id="sign-up215">[m
+[31m-                        Suriname[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SJ" id="sign-up216">[m
+[31m-                        Svalbard and Jan Mayen[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SZ" id="sign-up217">[m
+[31m-                        Swaziland[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SE" id="sign-up218">[m
+[31m-                        Sweden[m
+[31m-                      </Option>[m
+[31m-                      <Option value="CH" id="sign-up219">[m
+[31m-                        Switzerland[m
+[31m-                      </Option>[m
+[31m-                      <Option value="SY" id="sign-up220">[m
+[31m-                        Syrian Arab Republic[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TW" id="sign-up221">[m
+[31m-                        Taiwan, Province of China[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TJ" id="sign-up222">[m
+[31m-                        Tajikistan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TZ" id="sign-up223">[m
+[31m-                        Tanzania, United Republic of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TH" id="sign-up224">[m
+[31m-                        Thailand[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TL" id="sign-up225">[m
+[31m-                        Timor-Leste[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TG" id="sign-up226">[m
+[31m-                        Togo[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TK" id="sign-up227">[m
+[31m-                        Tokelau[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TO" id="sign-up228">[m
+[31m-                        Tonga[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TT" id="sign-up229">[m
+[31m-                        Trinidad and Tobago[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TN" id="sign-up230">[m
+[31m-                        Tunisia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TR" id="sign-up231">[m
+[31m-                        Turkey[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TM" id="sign-up232">[m
+[31m-                        Turkmenistan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TC" id="sign-up233">[m
+[31m-                        Turks and Caicos Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="TV" id="sign-up234">[m
+[31m-                        Tuvalu[m
+[31m-                      </Option>[m
+[31m-                      <Option value="UG" id="sign-up235">[m
+[31m-                        Uganda[m
+[31m-                      </Option>[m
+[31m-                      <Option value="UA" id="sign-up236">[m
+[31m-                        Ukraine[m
+[31m-                      </Option>[m
+[31m-                      <Option value="AE" id="sign-up237">[m
+[31m-                        United Arab Emirates[m
+[31m-                      </Option>[m
+[31m-                      <Option value="GB" id="sign-up238">[m
+[31m-                        United Kingdom[m
+[31m-                      </Option>[m
+[31m-                      <Option value="US" id="sign-up239" selected>[m
+[31m-                        United States[m
+[31m-                      </Option>[m
+[31m-                      <Option value="UM" id="sign-up240">[m
+[31m-                        United States Minor Outlying Islands[m
+[31m-                      </Option>[m
+[31m-                      <Option value="UY" id="sign-up241">[m
+[31m-                        Uruguay[m
+[31m-                      </Option>[m
+[31m-                      <Option value="UZ" id="sign-up242">[m
+[31m-                        Uzbekistan[m
+[31m-                      </Option>[m
+[31m-                      <Option value="VU" id="sign-up243">[m
+[31m-                        Vanuatu[m
+[31m-                      </Option>[m
+[31m-                      <Option value="VE" id="sign-up244">[m
+[31m-                        Venezuela, Bolivarian Republic of[m
+[31m-                      </Option>[m
+[31m-                      <Option value="VN" id="sign-up245">[m
+[31m-                        Viet Nam[m
+[31m-                      </Option>[m
+[31m-                      <Option value="VG" id="sign-up246">[m
+[31m-                        Virgin Islands, British[m
+[31m-                      </Option>[m
+[31m-                      <Option value="VI" id="sign-up247">[m
+[31m-                        Virgin Islands, U.S.[m
+[31m-                      </Option>[m
+[31m-                      <Option value="WF" id="sign-up248">[m
+[31m-                        Wallis and Futuna[m
+[31m-                      </Option>[m
+[31m-                      <Option value="EH" id="sign-up249">[m
+[31m-                        Western Sahara[m
+[31m-                      </Option>[m
+[31m-                      <Option value="YE" id="sign-up250">[m
+[31m-                        Yemen[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ZM" id="sign-up251">[m
+[31m-                        Zambia[m
+[31m-                      </Option>[m
+[31m-                      <Option value="ZW" id="sign-up252">[m
+[31m-                        Zimbabwe[m
+[31m-                      </Option>[m
+[31m-                    </Select>[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-                <div className="col-11">[m
+[31m-                  <hr />[m
+[31m-                </div>[m
+[31m-                <div className="row col-12">[m
+[31m-                  <div[m
+[31m-                    data-for="email"[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="email"[m
+[31m-                      id="sign-up255"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Enter Email[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      type="text"[m
+[31m-                      id="email"[m
+[31m-                      value={signUpData.email}[m
+[31m-                      ref={this.emailEl}[m
+[31m-                      name="email"[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                    <div[m
+[31m-                      className="invalid-feedback"[m
+[31m-                      id="email_invalid_feedback"[m
+[31m-                      ref={this.emailInvalidFeedbackEl}[m
+[31m-                    >[m
+[31m-                      Please provide a valid Email.[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                  <div[m
+[31m-                    data-for="confirmEmail"[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="confirmEmail"[m
+[31m-                      id="sign-up256"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Confirm Email[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      name="confirmEmail"[m
+[31m-                      value={confirmEmail}[m
+[31m-                      ref={this.confirmEmailEl}[m
+[31m-                      type="text"[m
+[31m-                      id="confirm_email"[m
+[31m-                      className="form-control"[m
+[31m-                      required[m
+[31m-                    />[m
+[31m-                    <div[m
+[31m-                      className="invalid-feedback"[m
+[31m-                      id="confirm_email_invalid_feedback"[m
+[31m-                      ref={this.confirmEmailInvalidFeedbackEl}[m
+[31m-                    >[m
+[31m-                      Emails should must be same.[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-                <div className="col-11">[m
+[31m-                  <hr />[m
+[31m-                </div>[m
+[31m-                <div className="row col-12">[m
+[31m-                  <div[m
+[31m-                    data-for="cellNumber"[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="cellNumber"[m
+[31m-                      id="sign-up257"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Cell Number[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      type="text"[m
+[31m-                      name="cellNumber"[m
+[31m-                      id="cell_number"[m
+[31m-                      value={signUpData.cellNumber}[m
+[31m-                      ref={this.cellNumberEl}[m
+[31m-                      placeholder="###-###-####"[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                    <div[m
+[31m-                      className="invalid-feedback"[m
+[31m-                      id="cell_number_invalid_feedback"[m
+[31m-                      ref={this.cellNumberInvalidFeedbackEl}[m
+[31m-                    >[m
+[31m-                      Please provide a valid Cell Number.[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                  <div[m
+[31m-                    data-for="confirmCellNumber"[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="confirmCellNumber"[m
+[31m-                      id="sign-up258"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Confirm Cell Number[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      name="confirmCellNumber"[m
+[31m-                      value={confirmCellNumber}[m
+[31m-                      ref={this.confirmCellNumberEl}[m
+[31m-                      type="text"[m
+[31m-                      id="confirm_cell_number"[m
+[31m-                      placeholder="###-###-####"[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                    <div[m
+[31m-                      className="invalid-feedback"[m
+[31m-                      id="confirm_cell_number_invalid_feedback"[m
+[31m-                      ref={this.confirmCellNumberInvalidFeedbackEl}[m
+[31m-                    >[m
+[31m-                      Cell Numbers should must be same.[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="col-11">[m
+[31m-                  <hr />[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="row col-12">[m
+[31m-                  <div[m
+[31m-                    data-for="dob"[m
+[31m-                    style={{ display: 'flex', flexDirection: 'column' }}[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="dob"[m
+[31m-                      id="sign-up259"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Date Of Birth[m
+[31m-                    </label>[m
+[31m-                    <DatePicker[m
+[31m-                      style={{ width: 200, height: 40 }}[m
+[31m-                      showToday={false}[m
+[31m-                      required[m
+[31m-                      format="MM/DD/YYYY"[m
+[31m-                      className="dob-date-picker"[m
+[31m-                      value={signUpData.dob ? moment(signUpData.dob) : ''}[m
+[31m-                      onChange={(date, dateString) =>[m
+[31m-                        this.onChange({[m
+[31m-                          target: { name: 'dob', value: dateString },[m
+[31m-                        })[m
+[31m-                      }[m
+[31m-                    />[m
+[31m-                    <div[m
+[31m-                      className="invalid-feedback"[m
+[31m-                      id="dob_invalid_feedback"[m
+[31m-                      ref={this.dobInvalidFeedbackEl}[m
+[31m-                    >[m
+[31m-                      Please provide Date of Birth.[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                  <div[m
+[31m-                    data-for="gender"[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="gender"[m
+[31m-                      id="sign-up265"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      GENDER[m
+[31m-                    </label>[m
+[31m-                    <Select[m
+[31m-                      size="large"[m
+[31m-                      onSelect={(value) =>[m
+[31m-                        this.onChange({ target: { name: 'gender', value } })[m
+[31m-                      } //onSelect store gender value to state and localStorage[m
+[31m-                      name="gender"[m
+[31m-                      defaultValue={signUpData.gender}[m
+[31m-                      value={signUpData.gender}[m
+[31m-                      style={{ border: 'none' }}[m
+[31m-                      dropdownClassName="select-dropdown-style"[m
+[31m-                      className="form-control"[m
+[31m-                    >[m
+[31m-                      <Option value="F" id="sign-up266">[m
+[31m-                        Female[m
+[31m-                      </Option>[m
+[31m-                      <Option value="M" id="sign-up267">[m
+[31m-                        Male[m
+[31m-                      </Option>[m
+[31m-                    </Select>[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="col-11">[m
+[31m-                  <hr />[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="row col-12">[m
+[31m-                  <div[m
+[31m-                    data-for="postalCode"[m
+[31m-                    className="col-lg-4 col-md-4 col-sm-4 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="postalCode"[m
+[31m-                      id="sign-up260"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Postal Code[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      type="text"[m
+[31m-                      name="postalCode"[m
+[31m-                      value={signUpData.postalCode}[m
+[31m-                      placeholder="#####"[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                  </div>[m
+[31m-                  <div[m
+[31m-                    data-for="city"[m
+[31m-                    className="col-lg-3 col-md-4 col-sm-4 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="city"[m
+[31m-                      id="sign-up261"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      City[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      type="text"[m
+[31m-                      name="city"[m
+[31m-                      value={signUpData.city}[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                  </div>[m
+[31m-                  <div[m
+[31m-                    data-for="state"[m
+[31m-                    className="col-lg-3 col-md-4 col-sm-4 col-xs-6 form-groupform-input-control  form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="state"[m
+[31m-                      id="sign-up262"[m
+[31m-                      className="form-input-label col-xs-6"[m
+[31m-                    >[m
+[31m-                      State[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      type="text"[m
+[31m-                      name="state"[m
+[31m-                      value={signUpData.state}[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="col-11">[m
+[31m-                  <hr />[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="row col-12">[m
+[31m-                  <div[m
+[31m-                    data-for="password"[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="password"[m
+[31m-                      id="sign-up263"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Password[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      type="password"[m
+[31m-                      name="password"[m
+[31m-                      value={signUpData.password}[m
+[31m-                      ref={this.passwordEl}[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                  </div>[m
+[31m-[m
+[31m-                  <div[m
+[31m-                    data-for="confirmPassword"[m
+[31m-                    className="col-lg-5 col-md-6 col-sm-6 col-xs-6 form-group form-input-control"[m
+[31m-                  >[m
+[31m-                    <label[m
+[31m-                      htmlFor="confirmPassword"[m
+[31m-                      id="sign-up264"[m
+[31m-                      className="form-input-label"[m
+[31m-                    >[m
+[31m-                      Confirm Password[m
+[31m-                    </label>[m
+[31m-                    <input[m
+[31m-                      onChange={this.onChange.bind(this)}[m
+[31m-                      name="confirmPassword"[m
+[31m-                      value={confirmPassword}[m
+[31m-                      type="password"[m
+[31m-                      ref={this.confirmPassEl}[m
+[31m-                      className="form-control"[m
+[31m-                      required="required"[m
+[31m-                    />[m
+[31m-                    <div[m
+[31m-                      className="invalid-feedback"[m
+[31m-                      id="confirm_password_invalid_feedback"[m
+[31m-                      ref={this.confirmPassInvalidFeedbackEl}[m
+[31m-                    >[m
+[31m-                      Passwords should must be same.[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="col-11">[m
+[31m-                  <hr />[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="row col-12">[m
+[31m-                  <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">[m
+[31m-                    <label style={{ fontWeight: '500' }}>[m
+[31m-                      Do you want to enable multi factor authentication for[m
+[31m-                      Login:[m
+[31m-                    </label>[m
+[31m-                  </div>[m
+[31m-                  <div[m
+[31m-                    className="radio-item col-lg-6 col-md-6 col-sm-6 col-xs-6"[m
+[31m-                    style={{[m
+[31m-                      display: 'flex',[m
+[31m-                      flexDirection: 'row',[m
+[31m-                      marginLeft: '1rem',[m
+[31m-                    }}[m
+[31m-                  >[m
+[31m-                    <div className="radio-item">[m
+[31m-                      <input[m
+[31m-                        type="radio"[m
+[31m-                        checked={signUpData.twoFactorAuth === '1'}[m
+[31m-                        onChange={this.onChange.bind(this)}[m
+[31m-                        id="ritema"[m
+[31m-                        name="twoFactorAuth"[m
+[31m-                        value="1"[m
+[31m-                      />[m
+[31m-                      <label[m
+[31m-                        htmlFor="ritema"[m
+[31m-                        style={{ marginLeft: '1rem', cursor: 'pointer' }}[m
+[31m-                      >[m
+[31m-                        Yes[m
+[31m-                      </label>[m
+[31m-                    </div>[m
+[31m-[m
+[31m-                    <div className="radio-item">[m
+[31m-                      <input[m
+[31m-                        type="radio"[m
+[31m-                        checked={signUpData.twoFactorAuth === '0'}[m
+[31m-                        onChange={this.onChange.bind(this)}[m
+[31m-                        id="ritemb"[m
+[31m-                        name="twoFactorAuth"[m
+[31m-                        value="0"[m
+[31m-                      />[m
+[31m-                      <label[m
+[31m-                        htmlFor="ritemb"[m
+[31m-                        style={{ marginLeft: '1rem', cursor: 'pointer' }}[m
+[31m-                      >[m
+[31m-                        No[m
+[31m-                      </label>[m
+[31m-                    </div>[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div className="col-11">[m
+[31m-                  <hr />[m
+[31m-                </div>[m
+[31m-                <div[m
+[31m-                  className="col-10 mt-2"[m
+[31m-                  style={{ display: 'flex', justifyContent: 'center' }}[m
+[31m-                >[m
+[31m-                  <button[m
+[31m-                    className="btn btn-lg btn-outline-primary"[m
+[31m-                    id="sign-up270"[m
+[31m-                  >[m
+[31m-                    Sign Up[m
+[31m-                  </button>[m
+[31m-                </div>[m
+[31m-              </div>[m
+[31m-            </form>[m
+[31m-          </div>[m
+[31m-        </div>[m
+[31m-      </div>[m
+[31m-    );[m
+[31m-  }[m
+[31m-}[m
+[31m-[m
+[31m-const mapStateToProps = (state) => ({[m
+[31m-  locationInfo: state.member.locationInfo,[m
+[31m-});[m
+[31m-[m
+[31m-export default connect(mapStateToProps)(SignUp);[m
+[1mdiff --git a/src/pages/SignUp/Form.js b/src/pages/SignUp/Form.js[m
+[1mindex a47eb00..9d28da4 100644[m
+[1m--- a/src/pages/SignUp/Form.js[m
+[1m+++ b/src/pages/SignUp/Form.js[m
+[36m@@ -56,9 +56,13 @@[m [mconst Form = (props) => {[m
+ [m
+   useEffect(() => {[m
+     restoreSignUpSession();[m
+[31m-    console.log('restoring session');[m
+     props.dispatch(apiService.getMemberLocationInfo());[m
+   }, []);[m
+[32m+[m[32m  useEffect(() => {[m
+[32m+[m[32m    if (props.postalCode) {[m
+[32m+[m[32m      setFormLocationData(props.locationInfo);[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }, [props.postalCode]);[m
+ [m
+   const validateEmail = (email) => {[m
+     // eslint-disable-next-line[m
+[36m@@ -189,7 +193,7 @@[m [mconst Form = (props) => {[m
+     user['postalCode'] = locationInfo.zip;[m
+     setState({[m
+       ...state,[m
+[31m-      user,[m
+[32m+[m[32m      user[m
+     });[m
+   };[m
+ [m
+[36m@@ -242,6 +246,7 @@[m [mconst Form = (props) => {[m
+ [m
+ const mapStateToProps = (state) => ({[m
+   locationInfo: state.member.locationInfo,[m
+[32m+[m[32m  postalCode: state.member.locationInfo.zip[m
+ });[m
+ [m
+ export default connect(mapStateToProps)(Form);[m
+[1mdiff --git a/src/pages/SignUp/MemberTextFields.js b/src/pages/SignUp/MemberTextFields.js[m
+[1mindex 3ace4a1..16c29b3 100644[m
+[1m--- a/src/pages/SignUp/MemberTextFields.js[m
+[1m+++ b/src/pages/SignUp/MemberTextFields.js[m
+[36m@@ -217,10 +217,6 @@[m [mexport default (props) => {[m
+           value={user.userName}[m
+           variant="outlined"[m
+           required[m
+[31m-          inputProps={{[m
+[31m-            minLength: 3,[m
+[31m-            maxLength: 20,[m
+[31m-          }}[m
+           fullWidth[m
+           InputProps={{[m
+             classes: {[m
+[36m@@ -422,11 +418,6 @@[m [mexport default (props) => {[m
+           margin="normal"[m
+           required[m
+           fullWidth[m
+[31m-          inputProps={{[m
+[31m-            minLength: 6,[m
+[31m-            maxLength: 20,[m
+[31m-          }}[m
+[31m-          fullWidth[m
+           InputProps={{[m
+             classes: {[m
+               root: classes.cssOutlinedInput,[m
+[36m@@ -452,12 +443,6 @@[m [mexport default (props) => {[m
+           margin="normal"[m
+           required[m
+           fullWidth[m
+[31m-          inputProps={{[m
+[31m-            minLength: 6,[m
+[31m-            maxLength: 20,[m
+[31m-          }}[m
+[31m-          required[m
+[31m-          fullWidth[m
+           InputProps={{[m
+             classes: {[m
+               root: classes.cssOutlinedInput,[m
+[36m@@ -483,12 +468,6 @@[m [mexport default (props) => {[m
+           margin="normal"[m
+           required[m
+           fullWidth[m
+[31m-          inputProps={{[m
+[31m-            minLength: 6,[m
+[31m-            maxLength: 20,[m
+[31m-          }}[m
+[31m-          required[m
+[31m-          fullWidth[m
+           InputProps={{[m
+             classes: {[m
+               root: classes.cssOutlinedInput,[m
+[1mdiff --git a/src/redux/reducers/member.js b/src/redux/reducers/member.js[m
+[1mindex ed6b6ad..ba2969b 100644[m
+[1m--- a/src/redux/reducers/member.js[m
+[1m+++ b/src/redux/reducers/member.js[m
+[36m@@ -2,7 +2,7 @@[m [mimport { MEMBER, MEMBER_LOCATION_INFO } from '../actionTypes/app.js';[m
+ [m
+ export const initialState = {[m
+   member: { member_id: 1 },[m
+[31m-  locationInfo: null,[m
+[32m+[m[32m  locationInfo: {},[m
+ };[m
+ [m
+ const member = (state = initialState, action) => {[m
+[1mdiff --git a/yarn.lock b/yarn.lock[m
+[1mindex d37ec70..a1ca827 100644[m
+[1m--- a/yarn.lock[m
+[1m+++ b/yarn.lock[m
+[36m@@ -2,45 +2,6 @@[m
+ # yarn lockfile v1[m
+ [m
+ [m
+[31m-"@ant-design/colors@^3.1.0":[m
+[31m-  version "3.2.2"[m
+[31m-  resolved "https://registry.yarnpkg.com/@ant-design/colors/-/colors-3.2.2.tgz#5ad43d619e911f3488ebac303d606e66a8423903"[m
+[31m-  integrity sha512-YKgNbG2dlzqMhA9NtI3/pbY16m3Yl/EeWBRa+lB1X1YaYxHrxNexiQYCLTWO/uDvAjLFMEDU+zR901waBtMtjQ==[m
+[31m-  dependencies:[m
+[31m-    tinycolor2 "^1.4.1"[m
+[31m-[m
+[31m-"@ant-design/css-animation@^1.7.2":[m
+[31m-  version "1.7.2"[m
+[31m-  resolved "https://registry.yarnpkg.com/@ant-design/css-animation/-/css-animation-1.7.2.tgz#4ee5d2ec0fb7cc0a78b44e1c82628bd4621ac7e3"[m
+[31m-  integrity sha512-bvVOe7A+r7lws58B7r+fgnQDK90cV45AXuvGx6i5CCSX1W/M3AJnHsNggDANBxEtWdNdFWcDd5LorB+RdSIlBw==[m
+[31m-[m
+[31m-"@ant-design/icons-svg@^4.0.0":[m
+[31m-  version "4.1.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/@ant-design/icons-svg/-/icons-svg-4.1.0.tgz#480b025f4b20ef7fe8f47d4a4846e4fee84ea06c"[m
+[31m-  integrity sha512-Fi03PfuUqRs76aI3UWYpP864lkrfPo0hluwGqh7NJdLhvH4iRDc3jbJqZIvRDLHKbXrvAfPPV3+zjUccfFvWOQ==[m
+[31m-[m
+[31m-"@ant-design/icons@^4.2.1":[m
+[31m-  version "4.2.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/@ant-design/icons/-/icons-4.2.1.tgz#6f3ea5d98ab782072e4e9cbb70f25e4403ae1a6b"[m
+[31m-  integrity sha512-245ZI40MOr5GGws+sNSiJIRRoEf/J2xvPSMgwRYf3bv8mVGQZ6XTQI/OMeV16KtiSZ3D+mBKXVYSBz2fhigOXQ==[m
+[31m-  dependencies:[m
+[31m-    "@ant-design/colors" "^3.1.0"[m
+[31m-    "@ant-design/icons-svg" "^4.0.0"[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.6"[m
+[31m-    insert-css "^2.0.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-"@ant-design/react-slick@~0.26.1":[m
+[31m-  version "0.26.2"[m
+[31m-  resolved "https://registry.yarnpkg.com/@ant-design/react-slick/-/react-slick-0.26.2.tgz#0ca89fe166c5035b0e49649d813663b92f73a90f"[m
+[31m-  integrity sha512-6YubL24j/rZl9Oqw9ErsVMdvto6KeZk7To+h1HGvfo8WTpzXmVK/o4nZQzmZK6YDcXnzC8GZv4UwRiRanXdl2w==[m
+[31m-  dependencies:[m
+[31m-    classnames "^2.2.5"[m
+[31m-    json2mq "^0.2.0"[m
+[31m-    lodash "^4.17.15"[m
+[31m-    resize-observer-polyfill "^1.5.0"[m
+[31m-[m
+ "@babel/code-frame@7.8.3", "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.8.3":[m
+   version "7.8.3"[m
+   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.8.3.tgz#33e25903d7481181534e12ec0a25f16b6fcf419e"[m
+[36m@@ -934,13 +895,6 @@[m
+   dependencies:[m
+     regenerator-runtime "^0.13.4"[m
+ [m
+[31m-"@babel/runtime@^7.10.1", "@babel/runtime@^7.10.2":[m
+[31m-  version "7.10.3"[m
+[31m-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.3.tgz#670d002655a7c366540c67f6fd3342cd09500364"[m
+[31m-  integrity sha512-RzGO0RLSdokm9Ipe/YD+7ww8X2Ro79qiXZF3HU9ljrM+qnJmH1Vqth+hbiQZy761LnMJTMitHDuKVYTk3k4dLw==[m
+[31m-  dependencies:[m
+[31m-    regenerator-runtime "^0.13.4"[m
+[31m-[m
+ "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.6.0", "@babel/runtime@^7.8.3":[m
+   version "7.10.4"[m
+   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.4.tgz#a6724f1a6b8d2f6ea5236dbfe58c7d7ea9c5eb99"[m
+[36m@@ -1973,53 +1927,6 @@[m [mansi-styles@^4.0.0, ansi-styles@^4.1.0:[m
+     "@types/color-name" "^1.1.1"[m
+     color-convert "^2.0.1"[m
+ [m
+[31m-antd@^4.3.5:[m
+[31m-  version "4.3.5"[m
+[31m-  resolved "https://registry.yarnpkg.com/antd/-/antd-4.3.5.tgz#1bafbc2920a1b5266bcd46496532578b2fd0f98e"[m
+[31m-  integrity sha512-C1qILCKh+G7q06wtm4uqmyvqzAzAaDKKzuTO0BO+rtUbSATjzbUg2Bp5byDEw0ThUGTWfJEQ0J7HZHh0FgiaJA==[m
+[31m-  dependencies:[m
+[31m-    "@ant-design/css-animation" "^1.7.2"[m
+[31m-    "@ant-design/icons" "^4.2.1"[m
+[31m-    "@ant-design/react-slick" "~0.26.1"[m
+[31m-    array-tree-filter "^2.1.0"[m
+[31m-    classnames "^2.2.6"[m
+[31m-    copy-to-clipboard "^3.2.0"[m
+[31m-    lodash "^4.17.13"[m
+[31m-    moment "^2.25.3"[m
+[31m-    omit.js "^1.0.2"[m
+[31m-    raf "^3.4.1"[m
+[31m-    rc-animate "~3.1.0"[m
+[31m-    rc-cascader "~1.2.0"[m
+[31m-    rc-checkbox "~2.2.0"[m
+[31m-    rc-collapse "~2.0.0"[m
+[31m-    rc-dialog "~8.0.0"[m
+[31m-    rc-drawer "~4.0.0"[m
+[31m-    rc-dropdown "~3.1.2"[m
+[31m-    rc-field-form "~1.4.1"[m
+[31m-    rc-input-number "~5.0.0"[m
+[31m-    rc-mentions "~1.2.0"[m
+[31m-    rc-menu "~8.3.0"[m
+[31m-    rc-notification "~4.4.0"[m
+[31m-    rc-pagination "~2.2.5"[m
+[31m-    rc-picker "~1.6.1"[m
+[31m-    rc-progress "~3.0.0"[m
+[31m-    rc-rate "~2.7.0"[m
+[31m-    rc-resize-observer "^0.2.3"[m
+[31m-    rc-select "~11.0.0"[m
+[31m-    rc-slider "~9.3.0"[m
+[31m-    rc-steps "~4.0.0"[m
+[31m-    rc-switch "~3.2.0"[m
+[31m-    rc-table "~7.8.0"[m
+[31m-    rc-tabs "~11.4.1"[m
+[31m-    rc-tooltip "~4.2.0"[m
+[31m-    rc-tree "~3.3.0"[m
+[31m-    rc-tree-select "~4.0.0"[m
+[31m-    rc-trigger "~4.3.0"[m
+[31m-    rc-upload "~3.2.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-    scroll-into-view-if-needed "^2.2.25"[m
+[31m-    warning "^4.0.3"[m
+[31m-[m
+ anymatch@^2.0.0:[m
+   version "2.0.0"[m
+   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-2.0.0.tgz#bcb24b4f37934d9aa7ac17b4adaf89e7c76ef2eb"[m
+[36m@@ -2105,11 +2012,6 @@[m [marray-includes@^3.0.3, array-includes@^3.1.1:[m
+     es-abstract "^1.17.0"[m
+     is-string "^1.0.5"[m
+ [m
+[31m-array-tree-filter@^2.1.0:[m
+[31m-  version "2.1.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/array-tree-filter/-/array-tree-filter-2.1.0.tgz#873ac00fec83749f255ac8dd083814b4f6329190"[m
+[31m-  integrity sha512-4ROwICNlNw/Hqa9v+rk5h22KjmzB1JGTMVKP2AKJBOCgb0yL0ASf0+YvCcLNNwquOHNX48jkeZIJ3a+oOQqKcw==[m
+[31m-[m
+ array-union@^1.0.1:[m
+   version "1.0.2"[m
+   resolved "https://registry.yarnpkg.com/array-union/-/array-union-1.0.2.tgz#9a34410e4f4e3da23dea375be5be70f24778ec39"[m
+[36m@@ -2198,11 +2100,6 @@[m [masync-limiter@~1.0.0:[m
+   version "1.0.1"[m
+   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"[m
+ [m
+[31m-async-validator@^3.0.3:[m
+[31m-  version "3.3.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/async-validator/-/async-validator-3.3.0.tgz#1d92193bbe60d6d6c8b246692c7005e9ed14a8ee"[m
+[31m-  integrity sha512-cAHGD9EL8aCqWXjnb44q94MWiDFzUo1tMhvLb2WzcpWqGiKugsjWG9cvl+jPgkPca7asNbsBU3fa0cwkI/P+Xg==[m
+[31m-[m
+ async@^2.6.2:[m
+   version "2.6.3"[m
+   resolved "https://registry.yarnpkg.com/async/-/async-2.6.3.tgz#d72625e2344a3656e3a3ad4fa749fa83299d82ff"[m
+[36m@@ -2369,7 +2266,7 @@[m [mbabel-preset-react-app@^9.1.2:[m
+     babel-plugin-macros "2.8.0"[m
+     babel-plugin-transform-react-remove-prop-types "0.4.24"[m
+ [m
+[31m-babel-runtime@6.x, babel-runtime@^6.23.0, babel-runtime@^6.26.0:[m
+[32m+[m[32mbabel-runtime@^6.26.0:[m
+   version "6.26.0"[m
+   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"[m
+   dependencies:[m
+[36m@@ -2873,7 +2770,7 @@[m [mclass-utils@^0.3.5:[m
+     isobject "^3.0.0"[m
+     static-extend "^0.1.1"[m
+ [m
+[31m-classnames@2.x, classnames@^2.2.0, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6:[m
+[32m+[m[32mclassnames@^2.2.5, classnames@^2.2.6:[m
+   version "2.2.6"[m
+   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"[m
+ [m
+[36m@@ -3065,11 +2962,6 @@[m [mcompression@^1.7.4:[m
+     safe-buffer "5.1.2"[m
+     vary "~1.1.2"[m
+ [m
+[31m-compute-scroll-into-view@^1.0.14:[m
+[31m-  version "1.0.14"[m
+[31m-  resolved "https://registry.yarnpkg.com/compute-scroll-into-view/-/compute-scroll-into-view-1.0.14.tgz#80e3ebb25d6aa89f42e533956cb4b16a04cfe759"[m
+[31m-  integrity sha512-mKDjINe3tc6hGelUMNDzuhorIUZ7kS7BwyY0r2wQd2HOH2tRuJykiC06iSEX8y1TuhNzvz4GcJnK16mM2J1NMQ==[m
+[31m-[m
+ concat-map@0.0.1:[m
+   version "0.0.1"[m
+   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"[m
+[36m@@ -3165,13 +3057,6 @@[m [mcopy-descriptor@^0.1.0:[m
+   version "0.1.1"[m
+   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"[m
+ [m
+[31m-copy-to-clipboard@^3.2.0:[m
+[31m-  version "3.3.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/copy-to-clipboard/-/copy-to-clipboard-3.3.1.tgz#115aa1a9998ffab6196f93076ad6da3b913662ae"[m
+[31m-  integrity sha512-i13qo6kIHTTpCm8/Wup+0b1mVWETvu2kIMzKoK8FpkLkFxlt0znUAHcMzox+T8sPlqtZXq3CulEjQHsYiGFJUw==[m
+[31m-  dependencies:[m
+[31m-    toggle-selection "^1.0.6"[m
+[31m-[m
+ core-js-compat@^3.6.2:[m
+   version "3.6.4"[m
+   resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.6.4.tgz#938476569ebb6cda80d339bcf199fae4f16fff17"[m
+[36m@@ -3739,11 +3624,6 @@[m [mdom-accessibility-api@^0.3.0:[m
+   version "0.3.0"[m
+   resolved "https://registry.yarnpkg.com/dom-accessibility-api/-/dom-accessibility-api-0.3.0.tgz#511e5993dd673b97c87ea47dba0e3892f7e0c983"[m
+ [m
+[31m-dom-align@^1.7.0:[m
+[31m-  version "1.12.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/dom-align/-/dom-align-1.12.0.tgz#56fb7156df0b91099830364d2d48f88963f5a29c"[m
+[31m-  integrity sha512-YkoezQuhp3SLFGdOlr5xkqZ640iXrnHAwVYcDg8ZKRUtO7mSzSC2BA5V0VuyAwPSJA4CLIc6EDDJh4bEsD2+zA==[m
+[31m-[m
+ dom-converter@^0.2:[m
+   version "0.2.0"[m
+   resolved "https://registry.yarnpkg.com/dom-converter/-/dom-converter-0.2.0.tgz#6721a9daee2e293682955b6afe416771627bb768"[m
+[36m@@ -5365,11 +5245,6 @@[m [minquirer@^7.0.0:[m
+     strip-ansi "^6.0.0"[m
+     through "^2.3.6"[m
+ [m
+[31m-insert-css@^2.0.0:[m
+[31m-  version "2.0.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/insert-css/-/insert-css-2.0.0.tgz#eb5d1097b7542f4c79ea3060d3aee07d053880f4"[m
+[31m-  integrity sha1-610Ql7dUL0x56jBg067gfQU4gPQ=[m
+[31m-[m
+ internal-ip@^4.3.0:[m
+   version "4.3.0"[m
+   resolved "https://registry.yarnpkg.com/internal-ip/-/internal-ip-4.3.0.tgz#845452baad9d2ca3b69c635a137acb9a0dad0907"[m
+[36m@@ -6233,13 +6108,6 @@[m [mjson-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:[m
+   version "5.0.1"[m
+   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"[m
+ [m
+[31m-json2mq@^0.2.0:[m
+[31m-  version "0.2.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/json2mq/-/json2mq-0.2.0.tgz#b637bd3ba9eabe122c83e9720483aeb10d2c904a"[m
+[31m-  integrity sha1-tje9O6nqvhIsg+lyBIOusQ0skEo=[m
+[31m-  dependencies:[m
+[31m-    string-convert "^0.2.0"[m
+[31m-[m
+ json3@^3.3.2:[m
+   version "3.3.3"[m
+   resolved "https://registry.yarnpkg.com/json3/-/json3-3.3.3.tgz#7fc10e375fc5ae42c4705a5cc0aa6f62be305b81"[m
+[36m@@ -6855,14 +6723,6 @@[m [mmini-css-extract-plugin@0.9.0:[m
+     schema-utils "^1.0.0"[m
+     webpack-sources "^1.1.0"[m
+ [m
+[31m-mini-store@^3.0.1:[m
+[31m-  version "3.0.5"[m
+[31m-  resolved "https://registry.yarnpkg.com/mini-store/-/mini-store-3.0.5.tgz#1b3808ee5e8173ecdcbf43b029137e9a72bb9fb8"[m
+[31m-  integrity sha512-A7f0+d7TEvjJNY2K+splh2OG3AhmoPoiF3VntlAcJuBzryMumOF9LAVzg8mRJPPbCkz7mlWQg9MCMQPR2auftA==[m
+[31m-  dependencies:[m
+[31m-    hoist-non-react-statics "^3.3.2"[m
+[31m-    shallowequal "^1.0.2"[m
+[31m-[m
+ minimalistic-assert@^1.0.0, minimalistic-assert@^1.0.1:[m
+   version "1.0.1"[m
+   resolved "https://registry.yarnpkg.com/minimalistic-assert/-/minimalistic-assert-1.0.1.tgz#2e194de044626d4a10e7f7fbc00ce73e83e4d5c7"[m
+[36m@@ -6956,7 +6816,7 @@[m [mmkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@~0.5.1:[m
+   dependencies:[m
+     minimist "^1.2.5"[m
+ [m
+[31m-moment@^2.24.0, moment@^2.25.3, moment@^2.27.0:[m
+[32m+[m[32mmoment@^2.27.0:[m
+   version "2.27.0"[m
+   resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"[m
+   integrity sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==[m
+[36m@@ -7339,13 +7199,6 @@[m [mobuf@^1.0.0, obuf@^1.1.2:[m
+   version "1.1.2"[m
+   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"[m
+ [m
+[31m-omit.js@^1.0.2:[m
+[31m-  version "1.0.2"[m
+[31m-  resolved "https://registry.yarnpkg.com/omit.js/-/omit.js-1.0.2.tgz#91a14f0eba84066dfa015bf30e474c47f30bc858"[m
+[31m-  integrity sha512-/QPc6G2NS+8d4L/cQhbk6Yit1WTB6Us2g84A7A/1+w9d/eRGHyEqC5kkQtHVoHZ5NFWGG7tUGgrhVZwgZanKrQ==[m
+[31m-  dependencies:[m
+[31m-    babel-runtime "^6.23.0"[m
+[31m-[m
+ on-finished@~2.3.0:[m
+   version "2.3.0"[m
+   resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"[m
+[36m@@ -8578,7 +8431,7 @@[m [mquerystringify@^2.1.1:[m
+   version "2.1.1"[m
+   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.1.1.tgz#60e5a5fd64a7f8bfa4d2ab2ed6fdf4c85bad154e"[m
+ [m
+[31m-raf@^3.4.0, raf@^3.4.1:[m
+[32m+[m[32mraf@^3.4.1:[m
+   version "3.4.1"[m
+   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"[m
+   dependencies:[m
+[36m@@ -8610,325 +8463,6 @@[m [mraw-body@2.4.0:[m
+     iconv-lite "0.4.24"[m
+     unpipe "1.0.0"[m
+ [m
+[31m-rc-align@^4.0.0:[m
+[31m-  version "4.0.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-align/-/rc-align-4.0.1.tgz#0566de141a82d9a1923b7672c70bdb19dcde6e23"[m
+[31m-  integrity sha512-RQ5Fhxl0LW+zsxbY8dxAcpXdaHkHH2jzRSSpvBTS7G9LMK3T+WRcn4ovjg/eqAESM6TdTx0hfqWF2S1pO75jxQ==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "2.x"[m
+[31m-    dom-align "^1.7.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-    resize-observer-polyfill "^1.5.1"[m
+[31m-[m
+[31m-rc-animate@3.x, rc-animate@^3.0.0, rc-animate@^3.1.0, rc-animate@~3.1.0:[m
+[31m-  version "3.1.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-animate/-/rc-animate-3.1.0.tgz#051b689c2c7194e4c8ae016d32a0e5f9de6c8baa"[m
+[31m-  integrity sha512-8FsM+3B1H+0AyTyGggY6JyVldHTs1CyYT8CfTmG/nGHHXlecvSLeICJhcKgRLjUiQlctNnRtB1rwz79cvBVmrw==[m
+[31m-  dependencies:[m
+[31m-    "@ant-design/css-animation" "^1.7.2"[m
+[31m-    classnames "^2.2.6"[m
+[31m-    raf "^3.4.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-cascader@~1.2.0:[m
+[31m-  version "1.2.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-cascader/-/rc-cascader-1.2.0.tgz#46bc9044af39e1394b95ed84ef4d1397ae3c8de0"[m
+[31m-  integrity sha512-exJ6qvaZddARXOjxYQzD0oYrOhNS/WC3E0+xUtAA6yP3RA6PRtzTBWCI4Il4y58X3C+wTjkQq5q1vKxHD76QOA==[m
+[31m-  dependencies:[m
+[31m-    array-tree-filter "^2.1.0"[m
+[31m-    rc-trigger "^4.0.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-    warning "^4.0.1"[m
+[31m-[m
+[31m-rc-checkbox@~2.2.0:[m
+[31m-  version "2.2.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-checkbox/-/rc-checkbox-2.2.0.tgz#a0ce95c34f05e0eb882664174518cd4baa36dce9"[m
+[31m-  integrity sha512-Wjh/nutLA8iIPTT1P9I9KOqlUblVe+CWa3SxMibFySnLyYbMxKNtPhwNcbADPOqzNU0AsCntTduNeJg1n0B5fg==[m
+[31m-  dependencies:[m
+[31m-    babel-runtime "^6.23.0"[m
+[31m-    classnames "2.x"[m
+[31m-[m
+[31m-rc-collapse@~2.0.0:[m
+[31m-  version "2.0.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-collapse/-/rc-collapse-2.0.0.tgz#08c5942f82005b4342ced02d983581e4c41cd324"[m
+[31m-  integrity sha512-R5+Ge1uzwK9G1wZPRPhqQsed4FXTDmU0BKzsqfNBtZdk/wd+yey8ZutmJmSozYc5hQwjPkCvJHV7gOIRZKIlJg==[m
+[31m-  dependencies:[m
+[31m-    "@ant-design/css-animation" "^1.7.2"[m
+[31m-    classnames "2.x"[m
+[31m-    rc-animate "3.x"[m
+[31m-    react-is "^16.7.0"[m
+[31m-    shallowequal "^1.1.0"[m
+[31m-[m
+[31m-rc-dialog@~8.0.0:[m
+[31m-  version "8.0.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-dialog/-/rc-dialog-8.0.1.tgz#b9265edfc9ac5d75a381bd340bc5e9720572a760"[m
+[31m-  integrity sha512-ZOO2F8KHN4Dkpf1KiXNPKFWaLZutIuAhQw+YCafcFrigDv50AxGivoMSC//k4yjcJr3XRQTQMlMsmdAff4dEhw==[m
+[31m-  dependencies:[m
+[31m-    babel-runtime "6.x"[m
+[31m-    rc-animate "3.x"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-drawer@~4.0.0:[m
+[31m-  version "4.0.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-drawer/-/rc-drawer-4.0.1.tgz#eb13505021a8822380f9904b0e5c66e291bb9b64"[m
+[31m-  integrity sha512-sQCMV7W5hBjptdHXXKC+YOvZ6sNChDN9Nudd9dA5kJ2ld83yLa54IkEYs4FIb3Ana7yl4kkrgU0B1k2baSsnzw==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.6"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-dropdown@^3.1.0, rc-dropdown@~3.1.2:[m
+[31m-  version "3.1.2"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-dropdown/-/rc-dropdown-3.1.2.tgz#5199bd532ac8519813a347d194ab4b0cee702333"[m
+[31m-  integrity sha512-s2W5jqvjTid5DxotGO5FlTBaQWeB+Bu7McQgjB8Ot3Wbl72AIKwLf11+lgbV4mA2vWC1H8DKyn6SW9TKLTi0xg==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.6"[m
+[31m-    rc-trigger "^4.0.0"[m
+[31m-[m
+[31m-rc-field-form@~1.4.1:[m
+[31m-  version "1.4.4"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-field-form/-/rc-field-form-1.4.4.tgz#3689d19a8acd2bb9fe7ff43275bc42170d62f20d"[m
+[31m-  integrity sha512-1LwZ/I3fRUDzj2JGyfwur4nZqgwybrHy3kf6aKbGeWfYkpNbZaUNkIPfjBBmCdpN6lVPKI7ftRnYtjdBaXzyaw==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.8.4"[m
+[31m-    async-validator "^3.0.3"[m
+[31m-    rc-util "^5.0.0"[m
+[31m-[m
+[31m-rc-input-number@~5.0.0:[m
+[31m-  version "5.0.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-input-number/-/rc-input-number-5.0.1.tgz#bafbea11516fdc34ae309dd56b99ab11ab6bc9bf"[m
+[31m-  integrity sha512-4GgnJCjllAVNsZ9fPA+3LnoIgwUqM8QAWpyoKiTkPDN1UWapXYsPiKJCXOhnmiR0X8xpEoYHiobUaiquMliWiQ==[m
+[31m-  dependencies:[m
+[31m-    classnames "^2.2.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-mentions@~1.2.0:[m
+[31m-  version "1.2.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-mentions/-/rc-mentions-1.2.0.tgz#54347ac3c699318af9f14828acad012f32cd51cd"[m
+[31m-  integrity sha512-9d4AYMuKN4o/ND5r/82rJHMp+R+rn1b+f8ZmWsI/1NlWtMqVn9Q7yxofqbX78zgV6+nppsMvMqtduJhgQkVl0Q==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.6"[m
+[31m-    rc-menu "^8.0.1"[m
+[31m-    rc-trigger "^4.3.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-menu@^8.0.1, rc-menu@^8.2.1, rc-menu@~8.3.0:[m
+[31m-  version "8.3.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-menu/-/rc-menu-8.3.1.tgz#1ae8f27792de4734d29d2ec353410881ee65a00c"[m
+[31m-  integrity sha512-4LNQ0zIL27yayQu9Xi3QOUB2yEqm5qSFwD9MzB1XnTo1JeLTLy3+D8Bm94rykvnhV6z5MYtalUTnM7ETfjExXQ==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "2.x"[m
+[31m-    mini-store "^3.0.1"[m
+[31m-    rc-animate "^3.1.0"[m
+[31m-    rc-trigger "^4.2.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-    resize-observer-polyfill "^1.5.0"[m
+[31m-    shallowequal "^1.1.0"[m
+[31m-[m
+[31m-rc-notification@~4.4.0:[m
+[31m-  version "4.4.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-notification/-/rc-notification-4.4.0.tgz#192d082cd6e2995705f43c6929162631c71e3db1"[m
+[31m-  integrity sha512-IDeNAFGVeOsy1tv4zNVqMAXB9tianR80ewQbtObaAQfjwAjWfONdqdyjFkEU6nc6UQhSUYA5OcTGb7kwwbnh0g==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "2.x"[m
+[31m-    rc-animate "3.x"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-pagination@~2.2.5:[m
+[31m-  version "2.2.5"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-pagination/-/rc-pagination-2.2.5.tgz#40d675c06d604099be91831b019ca19f40c1999d"[m
+[31m-  integrity sha512-7hMFNi8R7C/4cLKgmSpUb3BfMFdt4DLrjTixSRMpMBR5jwGfwRyoV9g9Tm6gCuCaAlVAX1QNtlM1T2UqEOW5lw==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.1"[m
+[31m-[m
+[31m-rc-picker@~1.6.1:[m
+[31m-  version "1.6.4"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-picker/-/rc-picker-1.6.4.tgz#bafb4bb3edc82440820572a9cefba436fabfc3fd"[m
+[31m-  integrity sha512-F3ahAtKEI1DgKIfH7likOOEZeKs21xTXVshtD7hO3StrkGrSeK0+HzAG80nP8AAc6wMJE667d4+Bo093G0mCHA==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.1"[m
+[31m-    moment "^2.24.0"[m
+[31m-    rc-trigger "^4.0.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-    shallowequal "^1.1.0"[m
+[31m-[m
+[31m-rc-progress@~3.0.0:[m
+[31m-  version "3.0.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-progress/-/rc-progress-3.0.0.tgz#cea324ce8fc31421cd815d94a4649a8a29f8f8db"[m
+[31m-  integrity sha512-dQv1KU3o6Vay604FMYMF4S0x4GNXAgXf1tbQ1QoxeIeQt4d5fUeB7Ri82YPu+G+aRvH/AtxYAlEcnxyVZ1/4Hw==[m
+[31m-  dependencies:[m
+[31m-    classnames "^2.2.6"[m
+[31m-[m
+[31m-rc-rate@~2.7.0:[m
+[31m-  version "2.7.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-rate/-/rc-rate-2.7.0.tgz#4a436dc2b72397968f4d3df3742704888a395112"[m
+[31m-  integrity sha512-XD+1tnmKa3Ykm6jVX2ZiwIWdv+DG1t7LDK3dojeFoS8GgA7W3oqW5R/UpJ66qrLYpPHw9N4pYJKWySiPKtPsLQ==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.5"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-resize-observer@^0.2.0, rc-resize-observer@^0.2.1, rc-resize-observer@^0.2.3:[m
+[31m-  version "0.2.3"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-resize-observer/-/rc-resize-observer-0.2.3.tgz#8268284d1766d163240b1682661ae7b59bc4523d"[m
+[31m-  integrity sha512-dEPCGX15eRRnu+TNBIGyEghpzE24fTDW8pHdJPJS/kCR3lafFqBLqKzBgZW6pMUuM70/ZDyFQ0Kynx9kWsXRNw==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.1"[m
+[31m-    rc-util "^5.0.0"[m
+[31m-    resize-observer-polyfill "^1.5.1"[m
+[31m-[m
+[31m-rc-select@^11.0.0, rc-select@~11.0.0:[m
+[31m-  version "11.0.3"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-select/-/rc-select-11.0.3.tgz#12bc63b0a55e18384596fea1c3845dbc33e254c5"[m
+[31m-  integrity sha512-dx53Ei/3tBTv8U974scJoVgisRZc+Ubsx3x7u2uWwsAAWgkCJVhH1ZbeqQpj4Iyv/y3YqSjbBWinhEDE0H6q1Q==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "2.x"[m
+[31m-    rc-animate "^3.0.0"[m
+[31m-    rc-trigger "^4.3.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-    rc-virtual-list "^1.1.2"[m
+[31m-    warning "^4.0.3"[m
+[31m-[m
+[31m-rc-slider@~9.3.0:[m
+[31m-  version "9.3.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-9.3.1.tgz#444012f3b4847d592b167a9cee6a1a46779a6ef4"[m
+[31m-  integrity sha512-c52PWPyrfJWh28K6dixAm0906L3/4MUIxqrNQA4TLnC/Z+cBNycWJUZoJerpwSOE1HdM3XDwixCsmtFc/7aWlQ==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.5"[m
+[31m-    rc-tooltip "^4.0.0"[m
+[31m-    rc-util "^5.0.0"[m
+[31m-    shallowequal "^1.1.0"[m
+[31m-[m
+[31m-rc-steps@~4.0.0:[m
+[31m-  version "4.0.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-steps/-/rc-steps-4.0.1.tgz#a0e52f951b4e370d0cd2df29ae87eb744431d0d1"[m
+[31m-  integrity sha512-6MuqunJDIZexZj7v5EcHiOF6Q7Xg53+mcxELiIROhvXatssfLxDESpRZJ3zLquecxRjq5epYt92X8xBJ653itg==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.2"[m
+[31m-    classnames "^2.2.3"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-switch@~3.2.0:[m
+[31m-  version "3.2.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-switch/-/rc-switch-3.2.0.tgz#aa36bb417409ff4cc7d542ec4381cb5d87cfedc1"[m
+[31m-  integrity sha512-WQZnRrWZ+KGh4Cd98FpP1ZgvMmebctoHzKAO2n1Xsry1FQBSGgIw4rQJRxET31VS/dR1LIKb5md/k0UzcXXc0g==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.1"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-table@~7.8.0:[m
+[31m-  version "7.8.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-table/-/rc-table-7.8.0.tgz#13152345e57b9764c5efb3e458a3248b45805fd2"[m
+[31m-  integrity sha512-R2QTTfsMyF+NVjjB1JPsl69eMmjTXcDclqrUZZVGFG3fqjK2+nqA3aUn0hkv/7PaKZ3cWPnBmLpct8iX8YWksA==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.5"[m
+[31m-    raf "^3.4.1"[m
+[31m-    rc-resize-observer "^0.2.0"[m
+[31m-    rc-util "^5.0.0"[m
+[31m-    shallowequal "^1.1.0"[m
+[31m-[m
+[31m-rc-tabs@~11.4.1:[m
+[31m-  version "11.4.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-tabs/-/rc-tabs-11.4.1.tgz#50b1f0504bbdc8bc7f835774c8c297ee843b06c4"[m
+[31m-  integrity sha512-gp3VW58VnMypSWV+sSeDPgKcOs1uUjZphf4olsFyPB2DRzRfyXoZ2i6CM3QVWKw4E052CgiPCKHCzK9LuSKKCg==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "2.x"[m
+[31m-    raf "^3.4.1"[m
+[31m-    rc-dropdown "^3.1.0"[m
+[31m-    rc-menu "^8.2.1"[m
+[31m-    rc-resize-observer "^0.2.1"[m
+[31m-    rc-trigger "^4.2.1"[m
+[31m-    rc-util "^5.0.0"[m
+[31m-[m
+[31m-rc-tooltip@^4.0.0, rc-tooltip@~4.2.0:[m
+[31m-  version "4.2.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-tooltip/-/rc-tooltip-4.2.1.tgz#c1a2d5017ee03a771a9301c0dfdb46dfdf8fef94"[m
+[31m-  integrity sha512-oykuaGsHg7RFvPUaxUpxo7ScEqtH61C66x4JUmjlFlSS8gSx2L8JFtfwM1D68SLBxUqGqJObtxj4TED75gQTiA==[m
+[31m-  dependencies:[m
+[31m-    rc-trigger "^4.2.1"[m
+[31m-[m
+[31m-rc-tree-select@~4.0.0:[m
+[31m-  version "4.0.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-tree-select/-/rc-tree-select-4.0.1.tgz#0820efbf19624ed1ca37bf3d65bba6f85a1cf16d"[m
+[31m-  integrity sha512-VehfIZgu6Xmko7YfJgshmuIdeI7u7Ar1iLkmlb69/w1HjaDnSHbV3N3xopLABAq8lTlTAnSFU2JCPcYifvTmAA==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "2.x"[m
+[31m-    rc-select "^11.0.0"[m
+[31m-    rc-tree "^3.1.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-tree@^3.1.0:[m
+[31m-  version "3.6.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-tree/-/rc-tree-3.6.0.tgz#5b32b70c6323d6bd533c65930294fe652db58e5b"[m
+[31m-  integrity sha512-2Hy/F+zWuqF5vFlSqpcVXh9Ik2Dl6/tQcRks5EnK8UwXUOgav4+LVORCtdqy4KX7J94vz7d4xfiyWBye/gO1Xg==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "2.x"[m
+[31m-    rc-animate "^3.1.0"[m
+[31m-    rc-util "^5.0.0"[m
+[31m-    rc-virtual-list "^1.1.0"[m
+[31m-[m
+[31m-rc-tree@~3.3.0:[m
+[31m-  version "3.3.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-tree/-/rc-tree-3.3.1.tgz#1b656ded2a8447bc8a7cae18e6cd97f5b85bad0b"[m
+[31m-  integrity sha512-DGyVZN4HRSrmFErn68KOISIl3z0R9EjeNyZE0sgAaa5oqpQDAEK78/lYf5k3rot1N/iFAEJKaTRJfM7eIdWGwg==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "2.x"[m
+[31m-    rc-animate "^3.1.0"[m
+[31m-    rc-util "^5.0.0"[m
+[31m-    rc-virtual-list "^1.1.0"[m
+[31m-[m
+[31m-rc-trigger@^4.0.0, rc-trigger@^4.2.0, rc-trigger@^4.2.1, rc-trigger@^4.3.0, rc-trigger@~4.3.0:[m
+[31m-  version "4.3.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-trigger/-/rc-trigger-4.3.0.tgz#94ea1851d123359716d1dc3030083c015a92ecfb"[m
+[31m-  integrity sha512-jnGNzosXmDdivMBjPCYe/AfOXTpJU2/xQ9XukgoXDQEoZq/9lcI1r7eUIfq70WlWpLxlUEqQktiV3hwyy6Nw9g==[m
+[31m-  dependencies:[m
+[31m-    "@babel/runtime" "^7.10.1"[m
+[31m-    classnames "^2.2.6"[m
+[31m-    raf "^3.4.1"[m
+[31m-    rc-align "^4.0.0"[m
+[31m-    rc-animate "^3.0.0"[m
+[31m-    rc-util "^5.0.1"[m
+[31m-[m
+[31m-rc-upload@~3.2.0:[m
+[31m-  version "3.2.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-upload/-/rc-upload-3.2.0.tgz#251fc3c9105902e808600a414f368f285d63bfba"[m
+[31m-  integrity sha512-/vyOGVxl5QVM3ZE7s+GqYPbCLC/Q/vJq0sjdwnvJw01KvAR5kVOC4jbHEaU56dMss7PFGDfNzc8zO5bWYLDzVQ==[m
+[31m-  dependencies:[m
+[31m-    classnames "^2.2.5"[m
+[31m-[m
+[31m-rc-util@^5.0.0, rc-util@^5.0.1:[m
+[31m-  version "5.0.4"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.0.4.tgz#297bd719b1bd00b3c947a884ab7ef0a07c55dce6"[m
+[31m-  integrity sha512-cd19RCrE0DJH6UcJ9+V3eaXA/5sNWyVKOKkWl8ZM2OqgNzVb8fv0obf/TkuvSN43tmTsgqY8k7OqpFYHhmef8g==[m
+[31m-  dependencies:[m
+[31m-    react-is "^16.12.0"[m
+[31m-    shallowequal "^1.1.0"[m
+[31m-[m
+[31m-rc-virtual-list@^1.1.0, rc-virtual-list@^1.1.2:[m
+[31m-  version "1.1.5"[m
+[31m-  resolved "https://registry.yarnpkg.com/rc-virtual-list/-/rc-virtual-list-1.1.5.tgz#6edf7222830c7dd732f62698c8468b7f08ac8dec"[m
+[31m-  integrity sha512-roZ6HE5MNKaiop+Ic7jZS7xlMnXBLp0XBElsMbE4eEL3GnnnJAet2iXoT5wjKcKMXEVyVCD0L4yQozmH7+Kgxg==[m
+[31m-  dependencies:[m
+[31m-    classnames "^2.2.6"[m
+[31m-    raf "^3.4.1"[m
+[31m-    rc-util "^5.0.0"[m
+[31m-[m
+ react-app-polyfill@^1.0.6:[m
+   version "1.0.6"[m
+   resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-1.0.6.tgz#890f8d7f2842ce6073f030b117de9130a5f385f0"[m
+[36m@@ -9431,11 +8965,6 @@[m [mrequires-port@^1.0.0:[m
+   version "1.0.0"[m
+   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"[m
+ [m
+[31m-resize-observer-polyfill@^1.5.0, resize-observer-polyfill@^1.5.1:[m
+[31m-  version "1.5.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"[m
+[31m-  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==[m
+[31m-[m
+ resolve-cwd@^2.0.0:[m
+   version "2.0.0"[m
+   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"[m
+[36m@@ -9690,13 +9219,6 @@[m [mschema-utils@^2.5.0, schema-utils@^2.6.0, schema-utils@^2.6.1, schema-utils@^2.6[m
+     ajv "^6.12.0"[m
+     ajv-keywords "^3.4.1"[m
+ [m
+[31m-scroll-into-view-if-needed@^2.2.25:[m
+[31m-  version "2.2.25"[m
+[31m-  resolved "https://registry.yarnpkg.com/scroll-into-view-if-needed/-/scroll-into-view-if-needed-2.2.25.tgz#117b7bc7c61bc7a2b7872a0984bc73a19bc6e961"[m
+[31m-  integrity sha512-C8RKJPq9lK7eubwGpLbUkw3lklcG3Ndjmea2PyauzrA0i4DPlzAmVMGxaZrBFqCrVLfvJmP80IyHnv4jxvg1OQ==[m
+[31m-  dependencies:[m
+[31m-    compute-scroll-into-view "^1.0.14"[m
+[31m-[m
+ scss-tokenizer@^0.2.3:[m
+   version "0.2.3"[m
+   resolved "https://registry.yarnpkg.com/scss-tokenizer/-/scss-tokenizer-0.2.3.tgz#8eb06db9a9723333824d3f5530641149847ce5d1"[m
+[36m@@ -9840,11 +9362,6 @@[m [mshallow-clone@^3.0.0:[m
+   dependencies:[m
+     kind-of "^6.0.2"[m
+ [m
+[31m-shallowequal@^1.0.2, shallowequal@^1.1.0:[m
+[31m-  version "1.1.0"[m
+[31m-  resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"[m
+[31m-  integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==[m
+[31m-[m
+ shebang-command@^1.2.0:[m
+   version "1.2.0"[m
+   resolved "https://registry.yarnpkg.com/shebang-command/-/shebang-command-1.2.0.tgz#44aac65b695b03398968c39f363fee5deafdf1ea"[m
+[36m@@ -10170,11 +9687,6 @@[m [mstring-argv@0.3.1:[m
+   version "0.3.1"[m
+   resolved "https://registry.yarnpkg.com/string-argv/-/string-argv-0.3.1.tgz#95e2fbec0427ae19184935f816d74aaa4c5c19da"[m
+ [m
+[31m-string-convert@^0.2.0:[m
+[31m-  version "0.2.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/string-convert/-/string-convert-0.2.1.tgz#6982cc3049fbb4cd85f8b24568b9d9bf39eeff97"[m
+[31m-  integrity sha1-aYLMMEn7tM2F+LJFaLnZvznu/5c=[m
+[31m-[m
+ string-length@^2.0.0:[m
+   version "2.0.0"[m
+   resolved "https://registry.yarnpkg.com/string-length/-/string-length-2.0.0.tgz#d40dbb686a3ace960c1cffca562bf2c45f8363ed"[m
+[36m@@ -10512,11 +10024,6 @@[m [mtiny-warning@^1.0.0, tiny-warning@^1.0.2, tiny-warning@^1.0.3:[m
+   resolved "https://registry.yarnpkg.com/tiny-warning/-/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"[m
+   integrity sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==[m
+ [m
+[31m-tinycolor2@^1.4.1:[m
+[31m-  version "1.4.1"[m
+[31m-  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"[m
+[31m-  integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=[m
+[31m-[m
+ tmp@^0.0.33:[m
+   version "0.0.33"[m
+   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"[m
+[36m@@ -10568,11 +10075,6 @@[m [mto-regex@^3.0.1, to-regex@^3.0.2:[m
+     regex-not "^1.0.2"[m
+     safe-regex "^1.1.0"[m
+ [m
+[31m-toggle-selection@^1.0.6:[m
+[31m-  version "1.0.6"[m
+[31m-  resolved "https://registry.yarnpkg.com/toggle-selection/-/toggle-selection-1.0.6.tgz#6e45b1263f2017fa0acc7d89d78b15b8bf77da32"[m
+[31m-  integrity sha1-bkWxJj8gF/oKzH2J14sVuL932jI=[m
+[31m-[m
+ toidentifier@1.0.0:[m
+   version "1.0.0"[m
+   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"[m
+[36m@@ -10919,7 +10421,7 @@[m [mwalker@^1.0.7, walker@~1.0.5:[m
+   dependencies:[m
+     makeerror "1.0.x"[m
+ [m
+[31m-warning@^4.0.0, warning@^4.0.1, warning@^4.0.3:[m
+[32m+[m[32mwarning@^4.0.0, warning@^4.0.3:[m
+   version "4.0.3"[m
+   resolved "https://registry.yarnpkg.com/warning/-/warning-4.0.3.tgz#16e9e077eb8a86d6af7d64aa1e05fd85b4678ca3"[m
+   dependencies:[m
